@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{FEFBB59B-A8CF-9A71-532C-53ED1BB30F5E}</ProjectGuid>
+    <ProjectGuid>{AF4FDED5-67BA-244D-4E91-0D0CCF6E6505}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
@@ -64,7 +64,7 @@
      <None Include="Assets\SevenSegmentDisplay\Shaders\AlphaSelfIllum.shader" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween43.xml" />
  <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>/Users/users/Downloads/PhysicsGame/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
+ <HintPath>/Users/users/Documents/Relatively-Simple/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
@@ -91,22 +91,22 @@
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/TreeEditor/Editor/UnityEditor.TreeEditor.dll</HintPath>
  </Reference>
  <Reference Include="DOTween">
- <HintPath>/Users/users/Downloads/PhysicsGame/Assets/Graph_Maker/DOTween/DOTween.dll</HintPath>
+ <HintPath>/Users/users/Documents/Relatively-Simple/Assets/Graph_Maker/DOTween/DOTween.dll</HintPath>
  </Reference>
  <Reference Include="DOTween43">
- <HintPath>/Users/users/Downloads/PhysicsGame/Assets/Graph_Maker/DOTween/DOTween43.dll</HintPath>
+ <HintPath>/Users/users/Documents/Relatively-Simple/Assets/Graph_Maker/DOTween/DOTween43.dll</HintPath>
  </Reference>
  <Reference Include="DOTween46">
- <HintPath>/Users/users/Downloads/PhysicsGame/Assets/Graph_Maker/DOTween/DOTween46.dll</HintPath>
+ <HintPath>/Users/users/Documents/Relatively-Simple/Assets/Graph_Maker/DOTween/DOTween46.dll</HintPath>
  </Reference>
  <Reference Include="DOTween50">
- <HintPath>/Users/users/Downloads/PhysicsGame/Assets/Graph_Maker/DOTween/DOTween50.dll</HintPath>
+ <HintPath>/Users/users/Documents/Relatively-Simple/Assets/Graph_Maker/DOTween/DOTween50.dll</HintPath>
  </Reference>
  <Reference Include="DOTweenEditor">
- <HintPath>/Users/users/Downloads/PhysicsGame/Assets/Graph_Maker/DOTween/Editor/DOTweenEditor.dll</HintPath>
+ <HintPath>/Users/users/Documents/Relatively-Simple/Assets/Graph_Maker/DOTween/Editor/DOTweenEditor.dll</HintPath>
  </Reference>
  <Reference Include="SevenSegmentDisplayDriver">
- <HintPath>/Users/users/Downloads/PhysicsGame/Assets/SevenSegmentDisplay/Drivers/SevenSegmentDisplayDriver.dll</HintPath>
+ <HintPath>/Users/users/Documents/Relatively-Simple/Assets/SevenSegmentDisplay/Drivers/SevenSegmentDisplayDriver.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEditor.Graphs.dll</HintPath>
@@ -123,9 +123,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{2DB680D3-98D9-7140-F9AE-275DADA432DC}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{7F000398-814E-1324-940B-EE6078471C67}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{1BC23F93-ECA6-980B-67A2-7C1F3E4F6821}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
+      <Project>{D2C01CF2-EB6A-8CC1-6168-048C5DD953DF}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
