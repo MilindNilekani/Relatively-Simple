@@ -9,6 +9,8 @@ public class ChartManagerScript : MonoBehaviour {
     //public WMG_Axis_Graph lineGraph3;
     public int accLogMemory;
     public int numberOfPoints;
+	public SimpleGraph lineGraph3;
+	public GameObject graphObj;
 
     //private WMG_Series series1;
     //private WMG_Series series12;
@@ -59,6 +61,8 @@ public class ChartManagerScript : MonoBehaviour {
         //userAccXLog = new List<Vector2>();
         //userAccYLog = new List<Vector2>();
 
+		lineGraph3 = new SimpleGraph(); 
+
         valuesPerPoint = accLogMemory / numberOfPoints;
 	}
 	
@@ -71,6 +75,10 @@ public class ChartManagerScript : MonoBehaviour {
         if (accLog.Count < accLogMemory)            //Ignore the graph calculations if we don't have enough calculated values yet
             return;
 
+//		for (int i = 0; i < numberOfPoints; i++) {
+//			compactAccLog.Add (new Vector2(i, Random.Range(0,20)));
+//		}
+
         for (int i = 0; i < numberOfPoints; i++ )
         {
             accumulator = 0;
@@ -78,12 +86,19 @@ public class ChartManagerScript : MonoBehaviour {
             {
                 accumulator += accLog[i * valuesPerPoint + j].y;
             }
-            compactAccLog.Add(new Vector2(i, accumulator / valuesPerPoint));
+            //compactAccLog.Add(new Vector2(i, accumulator / valuesPerPoint));
+
+			compactAccLog.Add (new Vector2 (i, Random.Range(0,20)));
         }
         series2.pointValues = compactAccLog;
-
+		lineGraph3.NewValues(compactAccLog);
         //series3.pointValues = userAccXLog;
         //series32.pointValues = userAccYLog;
+	}
+
+	void OnGUI()
+	{
+		lineGraph3.Draw ();
 	}
 
     void UpdateAccLog(Vector2 acc)

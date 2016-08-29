@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Drawing
 {
@@ -72,6 +73,44 @@ public class Drawing
 	}
 }
 
+public class SimpleGraph {
+	private List<Vector2> values;
+	private Vector2 dimensions;
+	private Vector2 coords;
+
+	public SimpleGraph()
+	{
+		values = new List<Vector2> ();
+		coords = new Vector2 (Screen.width, Screen.height);
+	}
+
+	public void SetParams(Vector2 newCoords, Vector2 newDimenions)
+	{
+		coords = newCoords;
+		dimensions = newDimenions;
+		Debug.Log (newCoords);
+		Debug.Log (newDimenions);
+	}
+
+	public void NewValues(List<Vector2> newValues)
+	{
+		//values.Clear ();
+		values = newValues;
+	}
+
+	public void Draw(){
+		for (int i=0; i<values.Count-1; i++) {
+			Vector2 pointA = new Vector2 (values [i].x*Screen.width/24 , Screen.height-values[i].y);
+			Vector2 pointB = new Vector2 (values [i+1].x*Screen.width/24 , Screen.height - values[i+1].y);
+			Drawing.DrawLine(pointA, pointB, Color.red, 2.0f);
+		}
+	
+	}
+
+
+
+}
+
 public class LineDrawScript : MonoBehaviour {
 
 	float width;
@@ -85,16 +124,11 @@ public class LineDrawScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
 
-	void OnGUI () {
-		Vector2 pointA = new Vector2(Screen.width/2, Screen.height/2);
-		Vector2 pointB = Event.current.mousePosition;
-
-		for (int i=0; i<1000; i++)
-			Drawing.DrawLine(pointA, pointB, color, width);
+	void GetValues(List<Vector2> values)
+	{
+		
 	}
-
-
 }
