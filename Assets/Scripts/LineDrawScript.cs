@@ -19,6 +19,8 @@ public class Drawing
 	//  DrawLine makes up for the severe lack of 2D line rendering in the Unity runtime GUI system.
 	//  This function works by drawing a 1x1 texture filled with a color, which is then scaled
 	//   and rotated by altering the GUI matrix.  The matrix is restored afterwards.
+	//
+	// Thanks to: capnbishop
 	//****************************************************************************************************
 
 	public static Texture2D lineTex;
@@ -77,49 +79,58 @@ public class SimpleGraph {
 	private List<Vector2> values;
 	private Vector2 dimensions;
 	private Vector2 coords;
+	private int n;
+	private int yMultiplyer;
+	private int bottomPadding;
 
 	public SimpleGraph()
 	{
 		values = new List<Vector2> ();
-		coords = new Vector2 (Screen.width, Screen.height);
+		coords = new Vector2 (Screen.width/2, Screen.height/10);
+		dimensions = new Vector2 (Screen.width, Screen.height/5);
+		yMultiplyer = 20;
+		bottomPadding = 10;
+		n = 0;
 	}
 
 	public void SetParams(Vector2 newCoords, Vector2 newDimenions)
 	{
 		coords = newCoords;
 		dimensions = newDimenions;
-		Debug.Log (newCoords);
-		Debug.Log (newDimenions);
 	}
 
 	public void NewValues(List<Vector2> newValues)
 	{
 		//values.Clear ();
 		values = newValues;
+		n = values.Count;
+
+		List<float> smoother = new List<float>(){0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+		for (int i = 0; i < n; i++) {
+			smoother.Add (values [i].y);
+			smoother.RemoveAt (0);
+			float sum = 0.0f;
+			foreach (float value in smoother)
+				sum += value;
+			sum /= 4;
+			values [i] = new Vector2 (values [i].x, sum);
+		}
 	}
 
 	public void Draw(){
-		for (int i=0; i<values.Count-1; i++) {
-			Vector2 pointA = new Vector2 (values [i].x*Screen.width/24 , Screen.height-values[i].y);
-			Vector2 pointB = new Vector2 (values [i+1].x*Screen.width/24 , Screen.height - values[i+1].y);
-			Drawing.DrawLine(pointA, pointB, Color.red, 2.0f);
+		for (int i=0; i<n-1; i++) {
+			Vector2 pointA = new Vector2 (coords.x-dimensions.x/2+values [i].x*dimensions.x/(n-1) , Screen.height-coords.y+dimensions.y/2-bottomPadding-values[i].y*yMultiplyer);
+			Vector2 pointB = new Vector2 (coords.x-dimensions.x/2+values [i+1].x*dimensions.x/(n-1) , Screen.height-coords.y+dimensions.y/2-bottomPadding-values[i+1].y*yMultiplyer);
+			Drawing.DrawLine(pointA, pointB, new Color(0.16f, 0.75f, 0.99f), 3.0f);
 		}
 	
 	}
-
-
-
 }
 
 public class LineDrawScript : MonoBehaviour {
 
-	float width;
-	Color color;
-
 	// Use this for initialization
 	void Start () {
-		width = 1.0f;
-		color = Color.white;
 	}
 	
 	// Update is called once per frame

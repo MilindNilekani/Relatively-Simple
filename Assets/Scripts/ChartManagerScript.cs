@@ -88,7 +88,7 @@ public class ChartManagerScript : MonoBehaviour {
             }
             compactAccLog.Add(new Vector2(i, accumulator / valuesPerPoint));
 
-			//compactAccLog.Add (new Vector2 (i, Random.Range(0,20)));
+			//compactAccLog.Add (new Vector2 (i, Random.Range(0,10)));
         }
         series2.pointValues = compactAccLog;
 		lineGraph3.NewValues(compactAccLog);
