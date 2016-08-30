@@ -46,7 +46,7 @@ public class SimultaneitySetupScript : MonoBehaviour {
 			StopCoroutine ("EmitPhotons");
 		}
 		else {
-			setPhotonSpeeds ();
+			//calcPhotonSpeeds ();
 			photonsEmitting = true;
 			StartCoroutine ("EmitPhotons");
 		}
@@ -57,7 +57,7 @@ public class SimultaneitySetupScript : MonoBehaviour {
         speedOfLight = newSpeed;
     }
 
-    void setPhotonSpeeds()
+    void calcPhotonSpeeds()
     {
         leftPhotonVelocity = -playerSpeed/100 + -0.01f * speedOfLight;
         
@@ -67,8 +67,9 @@ public class SimultaneitySetupScript : MonoBehaviour {
 
     public void ChangeVel(float newVel)
     {
-        Debug.Log(newVel);
+        //Debug.Log(newVel);
         playerSpeed = newVel;
+		calcPhotonSpeeds ();
     }
 
 	IEnumerator EmitPhotons()

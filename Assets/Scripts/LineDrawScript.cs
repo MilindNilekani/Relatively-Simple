@@ -20,7 +20,7 @@ public class Drawing
 	//  This function works by drawing a 1x1 texture filled with a color, which is then scaled
 	//   and rotated by altering the GUI matrix.  The matrix is restored afterwards.
 	//
-	// Thanks to: capnbishop
+	// Thanks to: capnbishop (http://wiki.unity3d.com/index.php?title=DrawLine)
 	//****************************************************************************************************
 
 	public static Texture2D lineTex;
@@ -135,11 +135,6 @@ public class LineDrawScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
-
-	void GetValues(List<Vector2> values)
-	{
 		
 	}
 }
