@@ -4,29 +4,35 @@ using System.Collections.Generic;
 
 public class SimultaneitySetupScript : MonoBehaviour {
 
-    public GameObject leftPhotonPrefab;
-    public GameObject rightPhotonPrefab;
-    public GameObject leftWall;
-    public GameObject rightWall;
+    public GameObject frontPhotonPrefab;
+    public GameObject backPhotonPrefab;
+    public GameObject frontWall;
+    public GameObject backWall;
     public GameObject emitter;
 
-    private List<GameObject> leftPhotons;
-	private List<GameObject> rightPhotons;
+    private List<GameObject> frontPhotons;
+	private List<GameObject> backPhotons;
 
     private float speedOfLight = 15;
     private float playerSpeed = 0;
-    private float leftPhotonVelocity = -0.05f;
-    private float rightPhotonVelocity = 0.05f;
+    private float frontPhotonVelocity = -0.05f;
+    private float backPhotonVelocity = 0.05f;
+	private Vector2 frontPhotonDirection;
+	private Vector2 backPhotonDirection;
 	private bool photonsEmitting;
 
 
     // Use this for initialization
     void Start()
     {
-		leftPhotons = new List<GameObject> ();
-		rightPhotons = new List<GameObject> ();
+		frontPhotons = new List<GameObject> ();
+		backPhotons = new List<GameObject> ();
 		photonsEmitting = false;
-    }
+
+		frontPhotonDirection = (frontWall.transform.position - transform.position).normalized;
+		backPhotonDirection = (backWall.transform.position - transform.position).normalized;
+
+	}
 
     // Update is called once per frame
     void Update()
@@ -59,10 +65,10 @@ public class SimultaneitySetupScript : MonoBehaviour {
 
     void calcPhotonSpeeds()
     {
-        leftPhotonVelocity = -playerSpeed/100 + -0.01f * speedOfLight;
+        frontPhotonVelocity = -playerSpeed/100 + -0.01f * speedOfLight;
         
-        rightPhotonVelocity = -playerSpeed/100 + 0.01f * speedOfLight;
-        if (rightPhotonVelocity < 0) rightPhotonVelocity = 0;
+        backPhotonVelocity = -playerSpeed/100 + 0.01f * speedOfLight;
+        if (backPhotonVelocity < 0) backPhotonVelocity = 0;
     }
 
     public void ChangeVel(float newVel)
@@ -74,44 +80,47 @@ public class SimultaneitySetupScript : MonoBehaviour {
 
 	IEnumerator EmitPhotons()
 	{
-		leftPhotons.Add (GameObject.Instantiate (leftPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject);
-		rightPhotons.Add (GameObject.Instantiate (rightPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject);
-		StartCoroutine ("StartPhotons");
 		while (true) {
+			GameObject newPhoton = GameObject.Instantiate (frontPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject;
+			newPhoton.GetComponent<SimultaneityPhotonScript> ().InitializeParams (frontPhotonVelocity, frontWall.transform.position);
+			//frontPhotons.Add (newPhoton);
+
+			GameObject newPhoton2 = GameObject.Instantiate (backPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject;
+			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, backWall.transform.position);
+			//backPhotons.Add (newPhoton);
+
 			yield return new WaitForSeconds (0.25f);
-			leftPhotons.Add (GameObject.Instantiate (leftPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject);
-			rightPhotons.Add (GameObject.Instantiate (rightPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject);
 		}
 	}
 
-    IEnumerator StartPhotons()
-    {
-		while (leftPhotons.Count > 0 || rightPhotons.Count > 0)
-        { 
-			if (leftPhotons.Count > 0)
-            {
-				leftPhotons.ForEach(leftPhoton => leftPhoton.transform.Translate(leftPhotonVelocity, 0, 0));
-				for (int i = leftPhotons.Count - 1; i >= 0; i--) {
-					if (leftPhotons [i].transform.position.x < leftWall.transform.position.x) {
-						GameObject photon = leftPhotons [i];
-						leftPhotons.RemoveAt (i);
-						Destroy (photon);
-					}
-				}
-            }
-			if (rightPhotons.Count > 0)
-			{
-				rightPhotons.ForEach(rightPhoton => rightPhoton.transform.Translate (rightPhotonVelocity, 0, 0));
-				for (int i = rightPhotons.Count-1; i>= 0; i--){
-					if (rightPhotons[i].transform.position.x > rightWall.transform.position.x) {
-						GameObject photon = rightPhotons [i];
-						rightPhotons.RemoveAt (i);
-						Destroy (photon);
-					}
-				}
-				//rightPhotons.RemoveAll (rightPhoton => rightPhoton.transform.position.x > rightWall.transform.position.x);
-            }
-            yield return new WaitForSeconds(0.01f);
-        }
-    }
+//    IEnumerator StartPhotons()
+//    {
+//		while (frontPhotons.Count > 0 || backPhotons.Count > 0)
+//        { 
+//			if (frontPhotons.Count > 0)
+//            {
+//				frontPhotons.ForEach(frontPhoton => frontPhoton.transform.Translate(frontPhotonVelocity*frontPhotonDirection));
+//				for (int i = frontPhotons.Count - 1; i >= 0; i--) {
+//					if (frontPhotons [i].transform.position < frontWall.transform.position.x) {
+//						GameObject photon = frontPhotons [i];
+//						frontPhotons.RemoveAt (i);
+//						Destroy (photon);
+//					}
+//				}
+//            }
+//			if (backPhotons.Count > 0)
+//			{
+//				backPhotons.ForEach(backPhoton => backPhoton.transform.Translate (backPhotonVelocity*backPhotonDirection));
+//				for (int i = backPhotons.Count-1; i>= 0; i--){
+//					if (backPhotons[i].transform.position.x > backWall.transform.position.x) {
+//						GameObject photon = backPhotons [i];
+//						backPhotons.RemoveAt (i);
+//						Destroy (photon);
+//					}
+//				}
+//				//backPhotons.RemoveAll (backPhoton => backPhoton.transform.position.x > backWall.transform.position.x);
+//            }
+//            yield return new WaitForSeconds(0.01f);
+//        }
+//    }
 }

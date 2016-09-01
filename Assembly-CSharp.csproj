@@ -98,6 +98,7 @@
      <Compile Include="Assets\Scripts\ResultScript.cs" />
      <Compile Include="Assets\Scripts\RulerScript.cs" />
      <Compile Include="Assets\Scripts\SimulatorScript.cs" />
+     <Compile Include="Assets\Scripts\SimultaneityPhotonScript.cs" />
      <Compile Include="Assets\Scripts\SimultaneitySetupScript.cs" />
      <Compile Include="Assets\Scripts\SliderScript.cs" />
      <Compile Include="Assets\Scripts\SpeedoScript.cs" />
