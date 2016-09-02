@@ -65,10 +65,10 @@ public class SimultaneitySetupScript : MonoBehaviour {
 
     void calcPhotonSpeeds()
     {
-        frontPhotonVelocity = -playerSpeed/100 + -0.01f * speedOfLight;
+		frontPhotonVelocity = 0.005f*(-playerSpeed+ speedOfLight);
         
-        backPhotonVelocity = -playerSpeed/100 + 0.01f * speedOfLight;
-        if (backPhotonVelocity < 0) backPhotonVelocity = 0;
+		backPhotonVelocity = 0.005f*(playerSpeed + speedOfLight);
+        if (frontPhotonVelocity < 0) frontPhotonVelocity = 0;
     }
 
     public void ChangeVel(float newVel)
@@ -86,7 +86,7 @@ public class SimultaneitySetupScript : MonoBehaviour {
 			newPhoton.transform.parent = transform;
 
 			GameObject newPhoton2 = GameObject.Instantiate (backPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject;
-			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, frontWall.transform.position);
+			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, backWall.transform.position);
 			newPhoton2.transform.parent = transform;
 
 			yield return new WaitForSeconds (0.25f);
