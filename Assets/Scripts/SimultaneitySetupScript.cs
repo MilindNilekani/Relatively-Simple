@@ -83,11 +83,11 @@ public class SimultaneitySetupScript : MonoBehaviour {
 		while (true) {
 			GameObject newPhoton = GameObject.Instantiate (frontPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject;
 			newPhoton.GetComponent<SimultaneityPhotonScript> ().InitializeParams (frontPhotonVelocity, frontWall.transform.position);
-			//frontPhotons.Add (newPhoton);
+			newPhoton.transform.parent = transform;
 
 			GameObject newPhoton2 = GameObject.Instantiate (backPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject;
-			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, backWall.transform.position);
-			//backPhotons.Add (newPhoton);
+			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, frontWall.transform.position);
+			newPhoton2.transform.parent = transform;
 
 			yield return new WaitForSeconds (0.25f);
 		}

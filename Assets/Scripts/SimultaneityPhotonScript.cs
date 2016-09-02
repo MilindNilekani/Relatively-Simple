@@ -3,8 +3,9 @@ using System.Collections;
 
 public class SimultaneityPhotonScript : MonoBehaviour {
 
-	public GameObject target;
+	public Vector3 target;
 
+	private Vector3 direction;
 	private float velocity;
 
 	// Use this for initialization
@@ -12,16 +13,19 @@ public class SimultaneityPhotonScript : MonoBehaviour {
 		
 	}
 
-	public void InitializeParams(float vel, Vector3 target)
+	public void InitializeParams(float vel, Vector3 t)
 	{
 		velocity = vel;
-		Vector3 dir = target - transform.position;
+		target = t;
+		direction = (target - transform.position).normalized;
+		Transform img = transform.FindChild ("PhotonImage");
+		Vector3 dir = Mathf.Sign(-vel)*(target - img.transform.position);
 		float angle = Mathf.Atan2(dir.y,dir.x) * Mathf.Rad2Deg;
-		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+		img.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	}
 
 	// Update is called once per frame
 	void Update () {
-		transform.Translate (velocity/10 * transform.up);
+		transform.Translate (velocity/10 * direction);
 	}
 }
