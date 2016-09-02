@@ -250,7 +250,7 @@ public class BaseScriptSE : MonoBehaviour {
         globalCalcVelX = calcVelX;
         globalCalcVelY = calcVelY;
 
-        simultaneitySetup.SendMessage("ChangeVel", calcVel);
+        simultaneitySetup.SendMessage("ChangeVel", calcVelX);
 
         currVel += avgAcc;
 
