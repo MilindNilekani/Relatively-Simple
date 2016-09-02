@@ -65,9 +65,9 @@ public class SimultaneitySetupScript : MonoBehaviour {
 
     void calcPhotonSpeeds()
     {
-		frontPhotonVelocity = 0.005f*(-playerSpeed+ speedOfLight);
+		frontPhotonVelocity = 0.01f*(-playerSpeed+ speedOfLight);
         
-		backPhotonVelocity = 0.005f*(playerSpeed + speedOfLight);
+		backPhotonVelocity = 0.01f*(playerSpeed + speedOfLight);
         if (frontPhotonVelocity < 0) frontPhotonVelocity = 0;
     }
 

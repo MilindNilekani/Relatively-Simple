@@ -254,7 +254,8 @@ public class BaseScriptSE : MonoBehaviour {
 
         currVel += avgAcc;
 
-        compassNeedle.transform.Rotate(new Vector3(0, 0, Input.gyro.rotationRateUnbiased.z*Time.deltaTime*(180.0f/Mathf.PI)));
+		//Rotation must happen in the opposite way to negate player's rotation! '-' sign added!!!
+        compassNeedle.transform.Rotate(new Vector3(0, 0, -Input.gyro.rotationRateUnbiased.z*Time.deltaTime*(180.0f/Mathf.PI)));
         rotationLog.Add(compassNeedle.transform.rotation.eulerAngles.z);
 	}
 }
