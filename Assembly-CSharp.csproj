@@ -100,6 +100,7 @@
      <Compile Include="Assets\Scripts\SimulatorScript.cs" />
      <Compile Include="Assets\Scripts\SimultaneityPhotonScript.cs" />
      <Compile Include="Assets\Scripts\SimultaneitySetupScript.cs" />
+     <Compile Include="Assets\Scripts\SimultaneityToggleButtonScript.cs" />
      <Compile Include="Assets\Scripts\SliderScript.cs" />
      <Compile Include="Assets\Scripts\SpeedoScript.cs" />
      <Compile Include="Assets\Scripts\SpeedoScript2.cs" />
