@@ -29,6 +29,7 @@ public class BaseScriptSE : MonoBehaviour {
     //public GameObject warpedClock;
     //public GameObject virtualPlayer;
     //public GameObject regularLightClock;
+	public GameObject loadingScreen;
 
     //public GameObject lineGraph;
 
@@ -67,6 +68,7 @@ public class BaseScriptSE : MonoBehaviour {
         simulator.SendMessage("initializeSimulation");
 
         simultaneitySetup = GameObject.Find("SimultaneitySetup");
+		loadingScreen = GameObject.Find ("Loading Screen");
 
 		nextTime = 10;
         speedOfLight = 15;
@@ -111,6 +113,359 @@ public class BaseScriptSE : MonoBehaviour {
 			Application.LoadLevel(0);
 		}
     }
+
+	public void OnButtonPress()
+	{
+		loadingScreen.transform.localPosition = new Vector3 (0, 0, -120);
+		StartCoroutine ("DisplayProcessingScreen");
+	}
+
+	IEnumerator DisplayProcessingScreen()
+	{
+		yield return new WaitForSeconds(0.5f);
+		Summarize();
+		yield return null;
+	}
+
+	void Summarize()
+	{
+		loadingScreen.transform.localPosition = new Vector3 (0, 0, -120);
+		currVel = Vector3.zero;
+		compassNeedle.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
+		Texture2D tex;
+		List<float> temp;
+		float maxVel;
+
+		//TODO: Acceleration X
+
+
+		//Acceleration Y
+		tex = new Texture2D(accLog.Count, 100, TextureFormat.ARGB32, false);
+
+		//Add normalized Acceleration values to temp list
+		temp = new List<float>();
+
+		foreach (Vector3 acc in accLog)
+		{
+			temp.Add((acc.y / (float)assumedMax));
+		}
+		WriteLog(accLog, "accLog");
+		//Draw acceleration graph
+		DrawGraph(tex, temp, Color.black, 1);
+
+		//Draw lines at maxima points
+		DrawGraph(tex, maximaLog, Color.red, 2);
+		WriteLog(maximaLog, "maximaLog");
+
+		//Populate velList with velocity values calculated from distances between Maxima points
+		List<float> velList = new List<float>();
+		List<float> velXList = new List<float>();
+		List<float> velYList = new List<float>();
+		float dir;
+		//velList.Add(0);                             //Append 0 at the beginning of velList to make sure trial starts at 0
+		for (int i = 1; i < maximaLog.Count; i++)
+		{
+			velList.Add((1.0f*3.6f / ((maximaLog[i] - maximaLog[i - 1])*0.02f)));
+			dir = rotationLog[maximaLog[i]] *(Mathf.PI/180.0f);
+			velXList.Add(-(Mathf.Sin(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
+			velYList.Add((Mathf.Cos(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
+		}
+		velList.Add(0);                             //Append 0 at the end of velList to make sure trial ends at 0
+		velList.Add(0);                             //Twice
+
+		velXList.Add(0);
+		velXList.Add(0);
+		velYList.Add(0);
+		velYList.Add(0);
+
+		maximaLog.Add(accLog.Count);  
+
+		BezierPath bezierPath;
+		List<Vector3> drawingPoints;
+
+		maxVel = Mathf.Max(velXList.ToArray());
+		List<Vector3> points = new List<Vector3>();
+		List<Vector2> points2v = new List<Vector2>();
+
+		for (int i = 0; i < velXList.Count; i++)
+		{
+			points.Add(new Vector3(maximaLog[i], velXList[i], 0));
+		}
+		bezierPath = new BezierPath();
+		bezierPath.Interpolate(points, .5f);
+		drawingPoints = bezierPath.GetDrawingPoints2();
+		foreach (Vector3 point in drawingPoints)
+		{
+			points2v.Add (new Vector2(point.x, point.y));
+		}
+		WriteLog(points2v, "velXLog");
+
+		maxVel = Mathf.Max(velYList.ToArray());
+		points = new List<Vector3>();
+		points2v = new List<Vector2>();
+		for (int i = 0; i < velYList.Count; i++)
+		{
+			points.Add(new Vector3(maximaLog[i], velYList[i], 0));
+		}
+		bezierPath = new BezierPath();
+		bezierPath.Interpolate(points, .5f);
+		drawingPoints = bezierPath.GetDrawingPoints2();
+		foreach (Vector3 point in drawingPoints)
+		{
+			points2v.Add (new Vector2(point.x, point.y));
+		}
+		WriteLog(points2v, "velYLog");
+
+		DrawGraph(tex, points, Color.blue, 3);
+
+		//User Acceleration Calculation
+		points2v = new List<Vector2>();
+		points = new List<Vector3>();
+		for (int i = 0; i < velList.Count-1; i++)
+		{
+			dir = rotationLog[maximaLog[i]] * (Mathf.PI / 180.0f);
+			points.Add(new Vector3(maximaLog[i], (velXList[i + 1] - velXList[i]), 0));
+		}
+		bezierPath = new BezierPath();
+		bezierPath.Interpolate(points, .5f);
+		drawingPoints = bezierPath.GetDrawingPoints2();
+		foreach (Vector3 point in drawingPoints)
+		{
+			points2v.Add (new Vector2(point.x, point.y));
+		}
+		WriteLog(points2v, "accXLog");
+
+		points2v = new List<Vector2>();
+		points = new List<Vector3>();
+		for (int i = 0; i < velList.Count - 1; i++)
+		{
+			dir = rotationLog[maximaLog[i]] * (Mathf.PI / 180.0f);
+			points.Add(new Vector3(maximaLog[i], (velYList[i + 1] - velYList[i]), 0));
+		}
+		bezierPath = new BezierPath();
+		bezierPath.Interpolate(points, .5f);
+		drawingPoints = bezierPath.GetDrawingPoints2();
+		foreach (Vector3 point in drawingPoints)
+		{
+			points2v.Add (new Vector2(point.x, point.y));
+		}
+		WriteLog(points2v, "accYLog");
+
+
+		//Draw all graphs onto the texture and convert to image
+		tex.Apply();
+		SaveTextureToFile(tex, "accelerationY");
+
+		//Basic Graph to show rotation changes
+		temp.Clear();
+		tex = new Texture2D(accLog.Count, 100, TextureFormat.ARGB32, false);
+		foreach (float rot in rotationLog)
+		{
+			if (rot > Mathf.PI/2)
+				temp.Add((rot - Mathf.PI) / (Mathf.PI / 2));
+			else
+				temp.Add(rot / (Mathf.PI / 2));
+		}
+		DrawGraph(tex, temp, Color.black, 1);
+		tex.Apply();
+		SaveTextureToFile(tex, "RotationZ");
+
+		//Clear logs
+		accLog.Clear();
+		velLog.Clear();
+		maximaLog.Clear();
+		maximaLog.Add(0);
+
+		rotationLog.Clear();
+
+		float time1 = 0.0f;
+		float time2 = 0.0f;
+		WriteValues (time1, time2, "clockTimes");
+
+		WriteLog (warpedTimeLog, "WarpedClockTimes");
+
+
+		//Draw the simulation results
+//		simulator.SendMessage("simulationDraw");
+
+		//Capture Screenshot
+		Texture2D tex2 = new Texture2D(Screen.width, Screen.height);
+		//StartCoroutine(CaptureScreenshotAfterDelay(tex2));
+		tex2.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+		tex2.Apply();
+
+		SaveTextureToFile(tex2, "GraphMakerAccY");
+
+		//Another way to capture screenshot that doesn't seem to be working
+		Application.CaptureScreenshot(Application.persistentDataPath+ "Screenshot.png");
+
+
+
+		Application.LoadLevel(4);
+	}
+
+	void WriteLog(List<Vector3> log, string fileName)
+	{
+		string text = "";
+		foreach (Vector3 val in log)
+		{
+			text += val.y + ",";
+		}
+		text += "\r\n";
+		StreamWriter sw = System.IO.File.CreateText("/sdcard/" + fileName + ".csv");
+		sw.Close();
+		System.IO.File.WriteAllText("/sdcard/" + fileName + ".csv", text);
+	}
+
+	void WriteLog(List<Vector2> log, string fileName)
+	{
+		string text = "";
+		foreach (Vector2 val in log)
+		{
+			text += val.x + ",";
+		}
+		text += "\r\n";
+		foreach (Vector2 val in log)
+		{
+			text += val.y + ",";
+		}
+		text += "\r\n";
+		StreamWriter sw = System.IO.File.CreateText("/sdcard/" + fileName + ".csv");
+		sw.Close();
+		System.IO.File.WriteAllText("/sdcard/" + fileName + ".csv", text);
+	}
+
+	void WriteLog(List<int> log, string fileName)
+	{
+		string text = "";
+		foreach (int val in log)
+		{
+			text += val + ",";
+		}
+		text += "\r\n";
+		StreamWriter sw = System.IO.File.CreateText("/sdcard/" + fileName + ".csv");
+		sw.Close();
+		System.IO.File.WriteAllText("/sdcard/" + fileName + ".csv", text);
+	}
+
+	void WriteLog(List<float> log, string fileName)
+	{
+		string text = "";
+		foreach (float val in log)
+		{
+			text += val + ",";
+		}
+		text += "\r\n";
+		StreamWriter sw = System.IO.File.CreateText("/sdcard/" + fileName + ".csv");
+		sw.Close();
+		System.IO.File.WriteAllText("/sdcard/" + fileName + ".csv", text);
+	}
+
+	void WriteValues(float T1, float T2, string fileName)
+	{
+		string text = "";
+		text = T1 + "\n" + T2;
+		StreamWriter sw = System.IO.File.CreateText ("/sdcard/" + fileName + ".txt");
+		sw.Close ();
+		System.IO.File.WriteAllText ("/sdcard/" + fileName + ".txt", text);
+	}
+
+	//Draws one line passing through all points (x=index in list, y=point[i]) in 'points'
+	void DrawGraph(Texture2D tex, List<float> points, Color color, int style)
+	{
+		for (int i = 0; i < tex.width; i++ )
+		{
+			for (int j=0; j<tex.height; j++)
+			{
+				tex.SetPixel(i, j, Color.white);
+			}
+		}
+		for (int i = 0; i < points.Count - 1; i++)
+		{
+			DrawLine(tex, i, (int)(points[i] * 50) + 50, i + 1, (int)(points[i + 1] * 50) + 50, color);
+		}
+	}
+	// Draws a vertical line through x=point for every point in 'points'
+	void DrawGraph(Texture2D tex, List<int> points, Color color, int style)
+	{
+		foreach (int val in points)
+		{
+			DrawLine(tex, val, 0, val, 100, color);
+		}
+	}
+	//Plots each point specified in 'points' in 2D space and connects them
+	void DrawGraph(Texture2D tex, List<Vector3> points, Color color, int style)
+	{
+		if (style == 3)
+		{
+			for (int i = 0; i < points.Count - 1; i++)
+			{
+				Vector3 newPoint1 = points[i];
+				Vector3 newPoint2 = points[i + 1];
+				DrawLine(tex, (int)newPoint1.x, (int)(newPoint1.y * 80) + 10, (int)newPoint2.x, (int)(newPoint2.y * 80) + 10, color);
+			}
+		}
+		if (style == 4)
+		{
+			for (int i = 0; i < points.Count - 1; i++)
+			{
+				Vector3 newPoint1 = points[i];
+				Vector3 newPoint2 = points[i + 1];
+				DrawLine(tex, (int)newPoint1.x, (int)(newPoint1.y), (int)newPoint2.x, (int)(newPoint2.y), color);
+			}
+		}
+	}
+
+	//Function to draw a line. Can be treated as a blackbox
+	void DrawLine(Texture2D tex, int x0, int y0, int x1, int y1, Color col)
+	{
+		int dy = (int)(y1 - y0);
+		int dx = (int)(x1 - x0);
+		int stepx, stepy;
+
+		if (dy < 0) { dy = -dy; stepy = -1; }
+		else { stepy = 1; }
+		if (dx < 0) { dx = -dx; stepx = -1; }
+		else { stepx = 1; }
+		dy <<= 1;
+		dx <<= 1;
+
+		float fraction = 0;
+
+		tex.SetPixel(x0, y0, col);
+		if (dx > dy)
+		{
+			fraction = dy - (dx >> 1);
+			while (Mathf.Abs(x0 - x1) > 1)
+			{
+				if (fraction >= 0)
+				{
+					y0 += stepy;
+					fraction -= dx;
+				}
+				x0 += stepx;
+				fraction += dy;
+				tex.SetPixel(x0, y0, col);
+			}
+		}
+		else
+		{
+			fraction = dx - (dy >> 1);
+			while (Mathf.Abs(y0 - y1) > 1)
+			{
+				if (fraction >= 0)
+				{
+					x0 += stepx;
+					fraction -= dy;
+				}
+				y0 += stepy;
+				fraction += dx;
+				tex.SetPixel(x0, y0, col);
+			}
+		}
+	}
+
 
     IEnumerator CaptureScreenshotAfterDelay(Texture2D tex)
     {
@@ -166,6 +521,13 @@ public class BaseScriptSE : MonoBehaviour {
 
         return true;
     }
+
+	void SaveTextureToFile(Texture2D tex, string fileName)
+	{
+		byte[] bytes = tex.EncodeToPNG();
+		File.WriteAllBytes("/sdcard/" + fileName + ".png", bytes );
+
+	}
     
 
     //Gets called after every few milliseconds
