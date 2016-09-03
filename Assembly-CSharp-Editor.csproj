@@ -59,6 +59,7 @@
      <None Include="Assets\Graph_Maker\Shaders\AreaShadingGradient.shader" />
      <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween46.xml" />
+     <None Include="Assets\zzRuler\readme.txt" />
      <None Include="Assets\Graph_Maker\Shaders\AreaShadingFill.shader" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween43.xml" />
  <Reference Include="UnityEngine.Networking">
