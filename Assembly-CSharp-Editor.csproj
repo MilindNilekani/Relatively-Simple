@@ -59,13 +59,8 @@
      <None Include="Assets\Graph_Maker\Shaders\AreaShadingGradient.shader" />
      <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween46.xml" />
-     <None Include="Assets\zzRuler\readme.txt" />
      <None Include="Assets\Graph_Maker\Shaders\AreaShadingFill.shader" />
-     <None Include="Assets\SevenSegmentDisplay\Shaders\AlphaSelfIllum.shader" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween43.xml" />
- <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>/Users/users/Documents/Relatively-Simple/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
@@ -104,9 +99,6 @@
  </Reference>
  <Reference Include="DOTweenEditor">
  <HintPath>/Users/users/Documents/Relatively-Simple/Assets/Graph_Maker/DOTween/Editor/DOTweenEditor.dll</HintPath>
- </Reference>
- <Reference Include="SevenSegmentDisplayDriver">
- <HintPath>/Users/users/Documents/Relatively-Simple/Assets/SevenSegmentDisplay/Drivers/SevenSegmentDisplayDriver.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEditor.Graphs.dll</HintPath>

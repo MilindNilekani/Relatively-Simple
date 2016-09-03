@@ -115,21 +115,14 @@
      <Compile Include="Assets\WaypointPro\Script\PathData.cs" />
      <Compile Include="Assets\WaypointPro\Script\PathFollower.cs" />
      <Compile Include="Assets\WaypointPro\Script\WaypointManager.cs" />
-     <Compile Include="Assets\zzRuler\zzHorizontalRuler.cs" />
-     <Compile Include="Assets\zzRuler\zzVerticalRuler.cs" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween50.xml" />
      <None Include="Assets\Graph_Maker\DOTween\readme.txt" />
      <None Include="Assets\Graph_Maker\ReadMe-1.4.txt" />
      <None Include="Assets\Graph_Maker\Shaders\AreaShadingGradient.shader" />
      <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween46.xml" />
-     <None Include="Assets\zzRuler\readme.txt" />
      <None Include="Assets\Graph_Maker\Shaders\AreaShadingFill.shader" />
-     <None Include="Assets\SevenSegmentDisplay\Shaders\AlphaSelfIllum.shader" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween43.xml" />
- <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>/Users/users/Documents/Relatively-Simple/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
@@ -147,9 +140,6 @@
  </Reference>
  <Reference Include="DOTween50">
  <HintPath>/Users/users/Documents/Relatively-Simple/Assets/Graph_Maker/DOTween/DOTween50.dll</HintPath>
- </Reference>
- <Reference Include="SevenSegmentDisplayDriver">
- <HintPath>/Users/users/Documents/Relatively-Simple/Assets/SevenSegmentDisplay/Drivers/SevenSegmentDisplayDriver.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
