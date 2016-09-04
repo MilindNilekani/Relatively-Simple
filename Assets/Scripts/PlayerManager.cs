@@ -4,20 +4,19 @@ using System.Collections.Generic;
 using System.IO;
 
 
-public class PlayerManager : MonoBehaviour {
+public class PlayerManager : MonoBehaviour{
 
-	private static PlayerManager _instance = new PlayerManager();
+	private static PlayerManager _instance;
 
 	public float speed = 10.0F;
 	public Queue<Vector3> acc = new Queue<Vector3> ();
 	public Vector3 accNew;
 	public GUIStyle style;
-	public Vector3 pos;
 	public Vector3 vel;
 	public Vector3 avgAcc;
 	public int neighbourhoodSize = 10;
-	public int stopTimeThreshold = 25;
-	public float neighbourhoodThreshold = 0.007f;
+	public int stopTimeThreshold = 100;
+	public float neighbourhoodThreshold = 0.005f;
 	public int maximaSpacing = 10;
 	public int smoothingWindowSize = 20;
 	public float assumedMax;
@@ -27,8 +26,9 @@ public class PlayerManager : MonoBehaviour {
 	public GameObject regularClock;
 	public GameObject warpedClock;
 	public GameObject baseObject;
+	public GameObject chartManager;
 
-	private Vector3 playerDirection;
+	private float playerAngle;
 
 	private float calcVel;
 	private Vector3 currVel;
@@ -49,36 +49,56 @@ public class PlayerManager : MonoBehaviour {
 	private GraphScript graphYScript;
 	private GraphScript graphVelScript;
 
-
-	PlayerManager() {}
-
 	public static PlayerManager Instance {
-		get { return _instance; }
+		get { 
+			if (_instance == null) {
+				_instance = GameObject.FindObjectOfType<PlayerManager> ();
+			}
+			return _instance; 
+		}
 	}
 	public float SpeedOfLight { get { return speedOfLight;} set{speedOfLight = value;}}
+
+	public float CalcVel { get { return calcVel; } }
 
 	void Awake()
 	{
 		_instance = this;
 	}
 
-	void Start()
+	public void Start()
 	{
 		frameTime = 0;
 
 		Input.gyro.enabled = true;
 		avgAcc = Vector3.zero;
 		vel = Vector3.zero;
-		pos = transform.position;
 
 		nextTime = 10;
 		speedOfLight = 15;
 
+		chartManager = GameObject.Find("Chart Manager");
+		baseObject = GameObject.Find ("Base");
 		regularClock = GameObject.Find ("Regular Clock");
 		warpedClock = GameObject.Find("Warped Clock");
+		simulator = GameObject.Find ("Simulator");
 		simulator.SendMessage("initializeSimulation");
 
+		playerAngle = 0;
+
 		maximaLog.Add(0);
+	}
+
+	void OnGUI()
+	{
+		GUI.skin.label.fontSize = 40;
+		GUI.Label(new Rect(10, 10, 1000, 100), "Direction: " + playerAngle);
+		GUI.Label(new Rect(10, 100, 1000, 100), "Vel: " + calcVel);
+		//GUI.Label(new Rect(10, 100, 1000, 100), "Time between frames is" + frameTime + "");
+		//GUI.Label(new Rect(10, 200, 1000, 100), "Gyro enabled? " + Input.gyro.enabled);
+		//GUI.Label(new Rect(10, 200, 1000, 100), "Compass Heading " + compassNeedle.transform.rotation.eulerAngles.z);
+
+		//speedOfLight = GUI.HorizontalSlider(new Rect(550, 30, 300, 50), speedOfLight, 1.0f, 20.0f);
 	}
 
 	//Function that is executed at the end of a trial.
@@ -250,7 +270,7 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	//Gets called after every few milliseconds
-	void FixedUpdate()
+	public void FixedUpdate()
 	{
 		frameTime = Time.deltaTime;
 
@@ -269,8 +289,6 @@ public class PlayerManager : MonoBehaviour {
 
 		accLog.Add(avgAcc); 
 
-
-
 		//Check if the point from a few iterations back is a maxima (The first point that has enough right neighbours)
 		if (accLog.Count > 2 + 2 * neighbourhoodSize)
 		{
@@ -283,52 +301,59 @@ public class PlayerManager : MonoBehaviour {
 			}
 
 			//Search for maxima and replace bands of maxima with a single (the first) one
+			ConsoleDebug.Instance.Print("No Maxima");
 			if (CheckIfMaxima(1 + neighbourhoodSize, list, neighbourhoodSize, neighbourhoodThreshold))
 			{
+				ConsoleDebug.Instance.Print ("Found Maxima");
 				if (maximaLog.Count == 0)
 					maximaLog.Add(accLog.Count - 1 - neighbourhoodSize);
 				else
 					if (accLog.Count - 1 - neighbourhoodSize > maximaLog[maximaLog.Count - 1] + maximaSpacing)
 					{
 						maximaLog.Add(accLog.Count - 1 - neighbourhoodSize);
-
 						simulator.SendMessage("simulationSetSpeed", (50.0f / ((accLog.Count - 1 - neighbourhoodSize) - maximaLog[maximaLog.Count - 2])));
 					}
 			}
 		}
 		//Send relevant information to the simulator
-		simulator.SendMessage("simulationChangeDir", playerDirection.z);
+		simulator.SendMessage("simulationChangeDir", playerAngle);
 		simulator.SendMessage("simulationStep", Time.deltaTime);
 
 		//Calculate an approximate current velocity using previous 2 maxima values
-		if (maximaLog.Count > 2)
-		{
+		if (maximaLog.Count > 2) {
 			// If it has been a considerable time since the last step, the user has probably stopped
-			if ((accLog.Count - 1 - neighbourhoodSize) > maximaLog[maximaLog.Count - 1] + stopTimeThreshold)
+			if ((accLog.Count - 1 - neighbourhoodSize) > maximaLog [maximaLog.Count - 1] + stopTimeThreshold) {
 				calcVel = 0;
-			else
-				calcVel = (50.0f / ((maximaLog[maximaLog.Count - 1] - maximaLog[maximaLog.Count - 2])));
-		}
-		else
+			} else
+				calcVel = (50.0f / ((maximaLog [maximaLog.Count - 1] - maximaLog [maximaLog.Count - 2])));
+		} else {
+			
 			calcVel = 0;
+		}
 
 		if (calcVel > speedOfLight) calcVel = speedOfLight;
 
+
+
+		//Debug.Log (GameObject.Find("Warped Clock"));
 		float totalTime = warpedClock.GetComponent<ClockScript>().totalTime;
 		warpedTimeLog.Add (totalTime);
 
 		Vector2 avgAcc2v = new Vector2(avgAcc.x, avgAcc.y);
+		chartManager.SendMessage("UpdateAccLog", new Vector2(0, calcVel));
 
-		float dir = playerDirection.z*(Mathf.PI / 180.0f);
+		float dir = playerAngle;
 		float calcVelX = Mathf.Abs(Mathf.Sin(dir)*calcVel);
 		float calcVelY = Mathf.Abs(Mathf.Cos(dir)*calcVel);
-		baseObject.SendMessage("ChangeSpeed",calcVel);
-		warpedClock.SendMessage("ChangeSpeed", Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)));
+
+		warpedClock.SendMessage ("ChangeSpeed", Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)));
+
+		baseObject.SendMessage ("ChangeSpeed", calcVel);
 		baseObject.SendMessage("ChangeRulerScale", new Vector3(Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)) , 1, 1));
 		currVel += avgAcc;
-
-		playerDirection = Quaternion.AngleAxis (Input.gyro.rotationRateUnbiased.z * Time.deltaTime * (180.0f / Mathf.PI), Vector3.forward) * playerDirection;
-		rotationLog.Add(playerDirection.z);
+		playerAngle += Input.gyro.rotationRateUnbiased.z * Time.deltaTime * Mathf.Rad2Deg;
+		playerAngle = playerAngle % 360;
+		rotationLog.Add(playerAngle);
 	}
 
 	//Function to check if a given point in a list of points is a local maxima
@@ -370,6 +395,7 @@ public class PlayerManager : MonoBehaviour {
 
 		return true;
 	}
+	#region Graph Drawing Functions
 		
 	void WriteLog(List<Vector3> log, string fileName)
 	{
@@ -531,4 +557,5 @@ public class PlayerManager : MonoBehaviour {
 		File.WriteAllBytes("/sdcard/" + fileName + ".png", bytes );
 
 	}
+	#endregion
 }

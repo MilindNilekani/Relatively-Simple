@@ -44,7 +44,8 @@ public class BaseScript : MonoBehaviour {
     private float max;
     private float frameTime;
     private float speedOfLight;
-	private Vector3 playerDirection;
+	//private Vector3 playerDirection;
+	private float playerAngle;
 
     private List<Vector3> accLog = new List<Vector3>();
     private List<Vector3> velLog = new List<Vector3>();
@@ -80,24 +81,28 @@ public class BaseScript : MonoBehaviour {
 		nextTime = 10;
         speedOfLight = 15;
 
-		playerDirection = Vector3.right;
+		//playerDirection = Vector3.right;
+		playerAngle = 0;
 
         hRulerDefaultScale = horizontalRuler.transform.localScale;
         vRulerDefaultScale = verticalRuler.transform.localScale;
         
         maximaLog.Add(0);
+
+		PlayerManager.Instance.Start ();
     }
 
-    void OnGUI()
-    {
-        GUI.skin.label.fontSize = 40;
-		GUI.Label(new Rect(10, 10, 1000, 100), "Direction: " + Mathf.Atan(playerDirection.y/playerDirection.x)*Mathf.Rad2Deg);
-        //GUI.Label(new Rect(10, 100, 1000, 100), "Time between frames is" + frameTime + "");
-		//GUI.Label(new Rect(10, 200, 1000, 100), "Gyro enabled? " + Input.gyro.enabled);
-        GUI.Label(new Rect(10, 200, 1000, 100), "Compass Heading " + compassNeedle.transform.rotation.eulerAngles.z);
-
-        //speedOfLight = GUI.HorizontalSlider(new Rect(550, 30, 300, 50), speedOfLight, 1.0f, 20.0f);
-    }
+//    void OnGUI()
+//    {
+//        GUI.skin.label.fontSize = 40;
+//		GUI.Label(new Rect(10, 10, 1000, 100), "Direction: " + playerAngle);
+//		GUI.Label(new Rect(10, 100, 1000, 100), "Direction: " + playerAngle);
+//        //GUI.Label(new Rect(10, 100, 1000, 100), "Time between frames is" + frameTime + "");
+//		//GUI.Label(new Rect(10, 200, 1000, 100), "Gyro enabled? " + Input.gyro.enabled);
+//        GUI.Label(new Rect(10, 200, 1000, 100), "Compass Heading " + compassNeedle.transform.rotation.eulerAngles.z);
+//
+//        //speedOfLight = GUI.HorizontalSlider(new Rect(550, 30, 300, 50), speedOfLight, 1.0f, 20.0f);
+//    }
 
 	public void SliderChanged(float newVal)
 	{
@@ -530,6 +535,16 @@ public class BaseScript : MonoBehaviour {
         
     }
 
+	public void ChangeSpeed(float calcVel)
+	{
+		speedometer.SendMessage ("ChangeSpeed", calcVel);
+	}
+
+	public void ChangeRulerScale(Vector3 scale)
+	{
+		ruler.SendMessage("ChangeRulerScale", scale);
+	}
+
     
 
     //Gets called after every few milliseconds
@@ -537,85 +552,85 @@ public class BaseScript : MonoBehaviour {
 	{
         frameTime = Time.deltaTime;
 
-        //Get newest acceleration value from accelerometer
-		accNew = new Vector3(Input.gyro.userAcceleration.x, Input.gyro.userAcceleration.y, 0);
-        
-        //Add new value to queue of acceleration values, get avg of the queue, and use that as the new acceleration value
-		acc.Enqueue (accNew);
-		if (acc.Count > smoothingWindowSize)
-			acc.Dequeue ();
-        avgAcc = Vector3.zero;
-		foreach (Vector3 tempAcc in acc) {
-			avgAcc += tempAcc;
-		}
-		avgAcc /= acc.Count;
-
-        accLog.Add(avgAcc); 
-
-
-        
-        //Check if the point from a few iterations back is a maxima (The first point that has enough right neighbours)
-        if (accLog.Count > 2 + 2 * neighbourhoodSize)
-        {
-            List<Vector3> v3List = new List<Vector3>();
-            v3List = accLog.GetRange(accLog.Count - 2 - 2 * neighbourhoodSize, 1 + 2 * neighbourhoodSize);
-            List<float> list = new List<float>();
-            foreach (Vector3 val in v3List)
-            {
-                list.Add(val.y);
-            }
-
-            //Search for maxima and replace bands of maxima with a single (the first) one
-            if (CheckIfMaxima(1 + neighbourhoodSize, list, neighbourhoodSize, neighbourhoodThreshold))
-            {
-                if (maximaLog.Count == 0)
-                    maximaLog.Add(accLog.Count - 1 - neighbourhoodSize);
-                else
-                    if (accLog.Count - 1 - neighbourhoodSize > maximaLog[maximaLog.Count - 1] + maximaSpacing)
-                    {
-                        maximaLog.Add(accLog.Count - 1 - neighbourhoodSize);
-
-                        simulator.SendMessage("simulationSetSpeed", (50.0f / ((accLog.Count - 1 - neighbourhoodSize) - maximaLog[maximaLog.Count - 2])));
-                    }
-            }
-        }
-        //Send relevant information to the simulator
-		simulator.SendMessage("simulationChangeDir", Mathf.Atan(playerDirection.y/playerDirection.x)*Mathf.Rad2Deg);
-        simulator.SendMessage("simulationStep", Time.deltaTime);
-
-        //Calculate an approximate current velocity using previous 2 maxima values
-        if (maximaLog.Count > 2)
-        {
-            // If it has been a considerable time since the last step, the user has probably stopped
-            if ((accLog.Count - 1 - neighbourhoodSize) > maximaLog[maximaLog.Count - 1] + stopTimeThreshold)
-                calcVel = 0;
-            else
-                calcVel = (50.0f / ((maximaLog[maximaLog.Count - 1] - maximaLog[maximaLog.Count - 2])));
-        }
-        else
-            calcVel = 0;
-
-        if (calcVel > speedOfLight) calcVel = speedOfLight;
-
-		float totalTime = warpedClock.GetComponent<ClockScript>().totalTime;
-		warpedTimeLog.Add (totalTime);
-        
-        Vector2 avgAcc2v = new Vector2(avgAcc.x, avgAcc.y);
-        chartManager.SendMessage("UpdateAccLog", new Vector2(0, calcVel));
-
-		float dir = Mathf.Atan(playerDirection.y/playerDirection.x)*Mathf.Rad2Deg*(Mathf.PI / 180.0f);
-        float calcVelX = Mathf.Abs(Mathf.Sin(dir)*calcVel);
-        float calcVelY = Mathf.Abs(Mathf.Cos(dir)*calcVel);
-		speedometer.SendMessage("ChangeSpeed",calcVel);
-		warpedClock.SendMessage("ChangeSpeed", Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)));
-		ruler.SendMessage("ChangeRulerScale", new Vector3(Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)) , 1, 1));
-
-        //StartCoroutine("ChangeHorizontalRulerScale", new Vector3(hRulerDefaultScale.x * Mathf.Sqrt(1 - Mathf.Pow(calcVelX / speedOfLight, 2)), hRulerDefaultScale.y, hRulerDefaultScale.z));
-        //StartCoroutine("ChangeVerticalRulerScale", new Vector3(vRulerDefaultScale.x, vRulerDefaultScale.y * Mathf.Sqrt(1 - Mathf.Pow(calcVelY / speedOfLight, 2)), vRulerDefaultScale.z));
-	    currVel += avgAcc;
-		playerDirection = Quaternion.AngleAxis (Input.gyro.rotationRateUnbiased.z * Time.deltaTime * Mathf.Rad2Deg, Vector3.forward) * playerDirection;
-		compassNeedle.transform.Rotate(new Vector3(0, 0, Input.gyro.rotationRateUnbiased.z*Time.deltaTime*Mathf.Rad2Deg));
-		rotationLog.Add(Mathf.Atan(playerDirection.y/playerDirection.x)*Mathf.Rad2Deg);
+//        //Get newest acceleration value from accelerometer
+//		accNew = new Vector3(Input.gyro.userAcceleration.x, Input.gyro.userAcceleration.y, 0);
+//        
+//        //Add new value to queue of acceleration values, get avg of the queue, and use that as the new acceleration value
+//		acc.Enqueue (accNew);
+//		if (acc.Count > smoothingWindowSize)
+//			acc.Dequeue ();
+//        avgAcc = Vector3.zero;
+//		foreach (Vector3 tempAcc in acc) {
+//			avgAcc += tempAcc;
+//		}
+//		avgAcc /= acc.Count;
+//
+//        accLog.Add(avgAcc); 
+//
+//
+//        
+//        //Check if the point from a few iterations back is a maxima (The first point that has enough right neighbours)
+//        if (accLog.Count > 2 + 2 * neighbourhoodSize)
+//        {
+//            List<Vector3> v3List = new List<Vector3>();
+//            v3List = accLog.GetRange(accLog.Count - 2 - 2 * neighbourhoodSize, 1 + 2 * neighbourhoodSize);
+//            List<float> list = new List<float>();
+//            foreach (Vector3 val in v3List)
+//            {
+//                list.Add(val.y);
+//            }
+//
+//            //Search for maxima and replace bands of maxima with a single (the first) one
+//            if (CheckIfMaxima(1 + neighbourhoodSize, list, neighbourhoodSize, neighbourhoodThreshold))
+//            {
+//                if (maximaLog.Count == 0)
+//                    maximaLog.Add(accLog.Count - 1 - neighbourhoodSize);
+//                else
+//                    if (accLog.Count - 1 - neighbourhoodSize > maximaLog[maximaLog.Count - 1] + maximaSpacing)
+//                    {
+//                        maximaLog.Add(accLog.Count - 1 - neighbourhoodSize);
+//
+//                        simulator.SendMessage("simulationSetSpeed", (50.0f / ((accLog.Count - 1 - neighbourhoodSize) - maximaLog[maximaLog.Count - 2])));
+//                    }
+//            }
+//        }
+//        //Send relevant information to the simulator
+//		simulator.SendMessage("simulationChangeDir", playerAngle);
+//        simulator.SendMessage("simulationStep", Time.deltaTime);
+//
+//        //Calculate an approximate current velocity using previous 2 maxima values
+//        if (maximaLog.Count > 2)
+//        {
+//            // If it has been a considerable time since the last step, the user has probably stopped
+//            if ((accLog.Count - 1 - neighbourhoodSize) > maximaLog[maximaLog.Count - 1] + stopTimeThreshold)
+//                calcVel = 0;
+//            else
+//                calcVel = (50.0f / ((maximaLog[maximaLog.Count - 1] - maximaLog[maximaLog.Count - 2])));
+//        }
+//        else
+//            calcVel = 0;
+//
+//        if (calcVel > speedOfLight) calcVel = speedOfLight;
+//
+//		float totalTime = warpedClock.GetComponent<ClockScript>().totalTime;
+//		warpedTimeLog.Add (totalTime);
+//        
+//        Vector2 avgAcc2v = new Vector2(avgAcc.x, avgAcc.y);
+//        chartManager.SendMessage("UpdateAccLog", new Vector2(0, calcVel));
+//
+//		float dir = playerAngle;
+//        float calcVelX = Mathf.Abs(Mathf.Sin(dir)*calcVel);
+//        float calcVelY = Mathf.Abs(Mathf.Cos(dir)*calcVel);
+//
+		PlayerManager.Instance.FixedUpdate();
+//		speedometer.SendMessage("ChangeSpeed",PlayerManager.Instance.CalcVel);
+//		warpedClock.SendMessage("ChangeSpeed", Mathf.Sqrt(1 - Mathf.Pow(calcVel / PlayerManager.Instance.SpeedOfLight, 2)));
+//		ruler.SendMessage("ChangeRulerScale", new Vector3(Mathf.Sqrt(1 - Mathf.Pow(calcVel / PlayerManager.Instance.SpeedOfLight, 2)) , 1, 1));
+//
+//	    currVel += avgAcc;
+//		playerAngle += Input.gyro.rotationRateUnbiased.z * Time.deltaTime * Mathf.Rad2Deg;
+//		playerAngle = playerAngle % 360;
+//		rotationLog.Add(playerAngle);
 	}
 
     private IEnumerator ChangeHorizontalRulerScale(Vector3 newScale)
