@@ -15,26 +15,20 @@ public class PlayerManager : MonoBehaviour {
 	public Vector3 pos;
 	public Vector3 vel;
 	public Vector3 avgAcc;
-	public Vector3 hRulerDefaultScale;
-	public Vector3 vRulerDefaultScale;
 	public int neighbourhoodSize = 10;
 	public int stopTimeThreshold = 25;
 	public float neighbourhoodThreshold = 0.007f;
 	public int maximaSpacing = 10;
 	public int smoothingWindowSize = 20;
 	public float assumedMax;
+
 	public Transform flashScreen;
-	public GameObject curve;
-	public GameObject compassNeedle;
-	public GameObject chartManager;
-	public GameObject simulator;
+	public GameObject simulator;	
 	public GameObject regularClock;
 	public GameObject warpedClock;
-	public GameObject ruler;
-	public GameObject horizontalRuler;
-	public GameObject verticalRuler;
-	public GameObject speedometer;
-	public GameObject loadingScreen;
+	public GameObject baseObject;
+
+	private Vector3 playerDirection;
 
 	private float calcVel;
 	private Vector3 currVel;
@@ -79,6 +73,10 @@ public class PlayerManager : MonoBehaviour {
 
 		nextTime = 10;
 		speedOfLight = 15;
+
+		regularClock = GameObject.Find ("Regular Clock");
+		warpedClock = GameObject.Find("Warped Clock");
+		simulator.SendMessage("initializeSimulation");
 
 		maximaLog.Add(0);
 	}
@@ -299,7 +297,7 @@ public class PlayerManager : MonoBehaviour {
 			}
 		}
 		//Send relevant information to the simulator
-		simulator.SendMessage("simulationChangeDir", compassNeedle.transform.rotation.eulerAngles.z);
+		simulator.SendMessage("simulationChangeDir", playerDirection.z);
 		simulator.SendMessage("simulationStep", Time.deltaTime);
 
 		//Calculate an approximate current velocity using previous 2 maxima values
@@ -320,21 +318,17 @@ public class PlayerManager : MonoBehaviour {
 		warpedTimeLog.Add (totalTime);
 
 		Vector2 avgAcc2v = new Vector2(avgAcc.x, avgAcc.y);
-		chartManager.SendMessage("UpdateAccLog", new Vector2(0, calcVel));
 
-		float dir = compassNeedle.transform.rotation.eulerAngles.z*(Mathf.PI / 180.0f);
+		float dir = playerDirection.z*(Mathf.PI / 180.0f);
 		float calcVelX = Mathf.Abs(Mathf.Sin(dir)*calcVel);
 		float calcVelY = Mathf.Abs(Mathf.Cos(dir)*calcVel);
-		speedometer.SendMessage("ChangeSpeed",calcVel);
+		baseObject.SendMessage("ChangeSpeed",calcVel);
 		warpedClock.SendMessage("ChangeSpeed", Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)));
-		ruler.SendMessage("ChangeRulerScale", new Vector3(Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)) , 1, 1));
-
-		//StartCoroutine("ChangeHorizontalRulerScale", new Vector3(hRulerDefaultScale.x * Mathf.Sqrt(1 - Mathf.Pow(calcVelX / speedOfLight, 2)), hRulerDefaultScale.y, hRulerDefaultScale.z));
-		//StartCoroutine("ChangeVerticalRulerScale", new Vector3(vRulerDefaultScale.x, vRulerDefaultScale.y * Mathf.Sqrt(1 - Mathf.Pow(calcVelY / speedOfLight, 2)), vRulerDefaultScale.z));
+		baseObject.SendMessage("ChangeRulerScale", new Vector3(Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)) , 1, 1));
 		currVel += avgAcc;
 
-		compassNeedle.transform.Rotate(new Vector3(0, 0, Input.gyro.rotationRateUnbiased.z*Time.deltaTime*(180.0f/Mathf.PI)));
-		rotationLog.Add(compassNeedle.transform.rotation.eulerAngles.z);
+		playerDirection = Quaternion.AngleAxis (Input.gyro.rotationRateUnbiased.z * Time.deltaTime * (180.0f / Mathf.PI), Vector3.forward) * playerDirection;
+		rotationLog.Add(playerDirection.z);
 	}
 
 	//Function to check if a given point in a list of points is a local maxima

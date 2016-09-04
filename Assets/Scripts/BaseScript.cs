@@ -44,6 +44,7 @@ public class BaseScript : MonoBehaviour {
     private float max;
     private float frameTime;
     private float speedOfLight;
+	private Vector3 playerDirection;
 
     private List<Vector3> accLog = new List<Vector3>();
     private List<Vector3> velLog = new List<Vector3>();
@@ -577,7 +578,7 @@ public class BaseScript : MonoBehaviour {
             }
         }
         //Send relevant information to the simulator
-        simulator.SendMessage("simulationChangeDir", compassNeedle.transform.rotation.eulerAngles.z);
+		simulator.SendMessage("simulationChangeDir", playerDirection.z);
         simulator.SendMessage("simulationStep", Time.deltaTime);
 
         //Calculate an approximate current velocity using previous 2 maxima values
@@ -600,7 +601,7 @@ public class BaseScript : MonoBehaviour {
         Vector2 avgAcc2v = new Vector2(avgAcc.x, avgAcc.y);
         chartManager.SendMessage("UpdateAccLog", new Vector2(0, calcVel));
 
-        float dir = compassNeedle.transform.rotation.eulerAngles.z*(Mathf.PI / 180.0f);
+		float dir = playerDirection.z*(Mathf.PI / 180.0f);
         float calcVelX = Mathf.Abs(Mathf.Sin(dir)*calcVel);
         float calcVelY = Mathf.Abs(Mathf.Cos(dir)*calcVel);
 		speedometer.SendMessage("ChangeSpeed",calcVel);
@@ -610,9 +611,9 @@ public class BaseScript : MonoBehaviour {
         //StartCoroutine("ChangeHorizontalRulerScale", new Vector3(hRulerDefaultScale.x * Mathf.Sqrt(1 - Mathf.Pow(calcVelX / speedOfLight, 2)), hRulerDefaultScale.y, hRulerDefaultScale.z));
         //StartCoroutine("ChangeVerticalRulerScale", new Vector3(vRulerDefaultScale.x, vRulerDefaultScale.y * Mathf.Sqrt(1 - Mathf.Pow(calcVelY / speedOfLight, 2)), vRulerDefaultScale.z));
 	    currVel += avgAcc;
-
+		playerDirection = Quaternion.AngleAxis (Input.gyro.rotationRateUnbiased.z * Time.deltaTime * (180.0f / Mathf.PI), Vector3.forward) * playerDirection;
         compassNeedle.transform.Rotate(new Vector3(0, 0, Input.gyro.rotationRateUnbiased.z*Time.deltaTime*(180.0f/Mathf.PI)));
-        rotationLog.Add(compassNeedle.transform.rotation.eulerAngles.z);
+		rotationLog.Add(compassNeedle.transform.rotation.z);
 	}
 
     private IEnumerator ChangeHorizontalRulerScale(Vector3 newScale)
