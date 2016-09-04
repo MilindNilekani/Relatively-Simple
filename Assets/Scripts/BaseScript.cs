@@ -80,6 +80,8 @@ public class BaseScript : MonoBehaviour {
 		nextTime = 10;
         speedOfLight = 15;
 
+		playerDirection = Vector3.right;
+
         hRulerDefaultScale = horizontalRuler.transform.localScale;
         vRulerDefaultScale = verticalRuler.transform.localScale;
         
@@ -88,11 +90,11 @@ public class BaseScript : MonoBehaviour {
 
     void OnGUI()
     {
-        //GUI.skin.label.fontSize = 40;
-        //GUI.Label(new Rect(10, 10, 1000, 100), "Acceleration is: " + accNew.y);
+        GUI.skin.label.fontSize = 40;
+		GUI.Label(new Rect(10, 10, 1000, 100), "Direction: " + Mathf.Atan(playerDirection.y/playerDirection.x)*Mathf.Rad2Deg);
         //GUI.Label(new Rect(10, 100, 1000, 100), "Time between frames is" + frameTime + "");
 		//GUI.Label(new Rect(10, 200, 1000, 100), "Gyro enabled? " + Input.gyro.enabled);
-        //GUI.Label(new Rect(10, 200, 1000, 100), "Compass Heading " + compassNeedle.transform.rotation.eulerAngles.z);
+        GUI.Label(new Rect(10, 200, 1000, 100), "Compass Heading " + compassNeedle.transform.rotation.eulerAngles.z);
 
         //speedOfLight = GUI.HorizontalSlider(new Rect(550, 30, 300, 50), speedOfLight, 1.0f, 20.0f);
     }
@@ -578,7 +580,7 @@ public class BaseScript : MonoBehaviour {
             }
         }
         //Send relevant information to the simulator
-		simulator.SendMessage("simulationChangeDir", playerDirection.z);
+		simulator.SendMessage("simulationChangeDir", Mathf.Atan(playerDirection.y/playerDirection.x)*Mathf.Rad2Deg);
         simulator.SendMessage("simulationStep", Time.deltaTime);
 
         //Calculate an approximate current velocity using previous 2 maxima values
@@ -601,7 +603,7 @@ public class BaseScript : MonoBehaviour {
         Vector2 avgAcc2v = new Vector2(avgAcc.x, avgAcc.y);
         chartManager.SendMessage("UpdateAccLog", new Vector2(0, calcVel));
 
-		float dir = playerDirection.z*(Mathf.PI / 180.0f);
+		float dir = Mathf.Atan(playerDirection.y/playerDirection.x)*Mathf.Rad2Deg*(Mathf.PI / 180.0f);
         float calcVelX = Mathf.Abs(Mathf.Sin(dir)*calcVel);
         float calcVelY = Mathf.Abs(Mathf.Cos(dir)*calcVel);
 		speedometer.SendMessage("ChangeSpeed",calcVel);
@@ -611,9 +613,9 @@ public class BaseScript : MonoBehaviour {
         //StartCoroutine("ChangeHorizontalRulerScale", new Vector3(hRulerDefaultScale.x * Mathf.Sqrt(1 - Mathf.Pow(calcVelX / speedOfLight, 2)), hRulerDefaultScale.y, hRulerDefaultScale.z));
         //StartCoroutine("ChangeVerticalRulerScale", new Vector3(vRulerDefaultScale.x, vRulerDefaultScale.y * Mathf.Sqrt(1 - Mathf.Pow(calcVelY / speedOfLight, 2)), vRulerDefaultScale.z));
 	    currVel += avgAcc;
-		playerDirection = Quaternion.AngleAxis (Input.gyro.rotationRateUnbiased.z * Time.deltaTime * (180.0f / Mathf.PI), Vector3.forward) * playerDirection;
-        compassNeedle.transform.Rotate(new Vector3(0, 0, Input.gyro.rotationRateUnbiased.z*Time.deltaTime*(180.0f/Mathf.PI)));
-		rotationLog.Add(compassNeedle.transform.rotation.z);
+		playerDirection = Quaternion.AngleAxis (Input.gyro.rotationRateUnbiased.z * Time.deltaTime * Mathf.Rad2Deg, Vector3.forward) * playerDirection;
+		compassNeedle.transform.Rotate(new Vector3(0, 0, Input.gyro.rotationRateUnbiased.z*Time.deltaTime*Mathf.Rad2Deg));
+		rotationLog.Add(Mathf.Atan(playerDirection.y/playerDirection.x)*Mathf.Rad2Deg);
 	}
 
     private IEnumerator ChangeHorizontalRulerScale(Vector3 newScale)
