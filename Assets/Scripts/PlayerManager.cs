@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour{
 	public float neighbourhoodThreshold = 0.005f;
 	public int maximaSpacing = 10;
 	public int smoothingWindowSize = 20;
-	public float assumedMax;
+	public float assumedMax = 0.2f;
 
 	public Transform flashScreen;
 	public GameObject simulator;	
