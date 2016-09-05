@@ -141,172 +141,173 @@ public class BaseScript : MonoBehaviour {
     void Summarize()
     {
 		loadingScreen.transform.localPosition = new Vector3 (0, 0, -120);
-        currVel = Vector3.zero;
-        compassNeedle.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-
-        Texture2D tex;
-        List<float> temp;
-        float maxVel;
-        
-        //TODO: Acceleration X
-
-
-        //Acceleration Y
-        tex = new Texture2D(accLog.Count, 100, TextureFormat.ARGB32, false);
-
-        //Add normalized Acceleration values to temp list
-        temp = new List<float>();
-        
-        foreach (Vector3 acc in accLog)
-        {
-            temp.Add((acc.y / (float)assumedMax));
-        }
-        WriteLog(accLog, "accLog");
-        //Draw acceleration graph
-        DrawGraph(tex, temp, Color.black, 1);
-
-        //Draw lines at maxima points
-        DrawGraph(tex, maximaLog, Color.red, 2);
-        WriteLog(maximaLog, "maximaLog");
-
-        //Populate velList with velocity values calculated from distances between Maxima points
-        List<float> velList = new List<float>();
-        List<float> velXList = new List<float>();
-        List<float> velYList = new List<float>();
-        float dir;
-        //velList.Add(0);                             //Append 0 at the beginning of velList to make sure trial starts at 0
-        for (int i = 1; i < maximaLog.Count; i++)
-        {
-            velList.Add((1.0f*3.6f / ((maximaLog[i] - maximaLog[i - 1])*0.02f)));
-            dir = rotationLog[maximaLog[i]] *(Mathf.PI/180.0f);
-            velXList.Add(-(Mathf.Sin(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
-            velYList.Add((Mathf.Cos(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
-        }
-        velList.Add(0);                             //Append 0 at the end of velList to make sure trial ends at 0
-        velList.Add(0);                             //Twice
-
-        velXList.Add(0);
-        velXList.Add(0);
-        velYList.Add(0);
-        velYList.Add(0);
-
-        maximaLog.Add(accLog.Count);  
-
-		BezierPath bezierPath;
-		List<Vector3> drawingPoints;
-
-        maxVel = Mathf.Max(velXList.ToArray());
-        List<Vector3> points = new List<Vector3>();
-        List<Vector2> points2v = new List<Vector2>();
-
-        for (int i = 0; i < velXList.Count; i++)
-        {
-            points.Add(new Vector3(maximaLog[i], velXList[i], 0));
-        }
-		bezierPath = new BezierPath();
-		bezierPath.Interpolate(points, .5f);
-		drawingPoints = bezierPath.GetDrawingPoints2();
-		foreach (Vector3 point in drawingPoints)
-		{
-			points2v.Add (new Vector2(point.x, point.y));
-		}
-		WriteLog(points2v, "velXLog");
-
-        maxVel = Mathf.Max(velYList.ToArray());
-        points = new List<Vector3>();
-        points2v = new List<Vector2>();
-        for (int i = 0; i < velYList.Count; i++)
-        {
-            points.Add(new Vector3(maximaLog[i], velYList[i], 0));
-        }
-		bezierPath = new BezierPath();
-		bezierPath.Interpolate(points, .5f);
-		drawingPoints = bezierPath.GetDrawingPoints2();
-		foreach (Vector3 point in drawingPoints)
-		{
-			points2v.Add (new Vector2(point.x, point.y));
-		}
-		WriteLog(points2v, "velYLog");
-		
-		DrawGraph(tex, points, Color.blue, 3);
-
-        //User Acceleration Calculation
-        points2v = new List<Vector2>();
-		points = new List<Vector3>();
-        for (int i = 0; i < velList.Count-1; i++)
-        {
-            dir = rotationLog[maximaLog[i]] * (Mathf.PI / 180.0f);
-			points.Add(new Vector3(maximaLog[i], (velXList[i + 1] - velXList[i]), 0));
-        }
-		bezierPath = new BezierPath();
-		bezierPath.Interpolate(points, .5f);
-		drawingPoints = bezierPath.GetDrawingPoints2();
-		foreach (Vector3 point in drawingPoints)
-		{
-			points2v.Add (new Vector2(point.x, point.y));
-		}
-        WriteLog(points2v, "accXLog");
-
-        points2v = new List<Vector2>();
-		points = new List<Vector3>();
-        for (int i = 0; i < velList.Count - 1; i++)
-        {
-            dir = rotationLog[maximaLog[i]] * (Mathf.PI / 180.0f);
-            points.Add(new Vector3(maximaLog[i], (velYList[i + 1] - velYList[i]), 0));
-        }
-		bezierPath = new BezierPath();
-		bezierPath.Interpolate(points, .5f);
-		drawingPoints = bezierPath.GetDrawingPoints2();
-		foreach (Vector3 point in drawingPoints)
-		{
-			points2v.Add (new Vector2(point.x, point.y));
-		}
-		WriteLog(points2v, "accYLog");
-
-		
-		//Draw all graphs onto the texture and convert to image
-        tex.Apply();
-        SaveTextureToFile(tex, "accelerationY");
-
-        //Basic Graph to show rotation changes
-        temp.Clear();
-        tex = new Texture2D(accLog.Count, 100, TextureFormat.ARGB32, false);
-        foreach (float rot in rotationLog)
-        {
-            if (rot > Mathf.PI/2)
-                temp.Add((rot - Mathf.PI) / (Mathf.PI / 2));
-            else
-                temp.Add(rot / (Mathf.PI / 2));
-        }
-        DrawGraph(tex, temp, Color.black, 1);
-        tex.Apply();
-        SaveTextureToFile(tex, "RotationZ");
-
-        //Clear logs
-        accLog.Clear();
-        velLog.Clear();
-        maximaLog.Clear();
-        maximaLog.Add(0);
-
-        rotationLog.Clear();
-
-		float time1 = regularClock.GetComponent<ClockScript>().totalTime;
-		float time2 = warpedClock.GetComponent<ClockScript>().totalTime;
-		WriteValues (time1, time2, "clockTimes");
-
-		WriteLog (warpedTimeLog, "WarpedClockTimes");
-
-
-        //Draw the simulation results
-        simulator.SendMessage("simulationDraw");
-
-        //Capture Screenshot
-        Texture2D tex2 = new Texture2D(Screen.width, Screen.height);
-        //StartCoroutine(CaptureScreenshotAfterDelay(tex2));
-        tex2.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-        tex2.Apply();
-
-        SaveTextureToFile(tex2, "GraphMakerAccY");
+//        currVel = Vector3.zero;
+//        compassNeedle.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+//
+//        Texture2D tex;
+//        List<float> temp;
+//        float maxVel;
+//        
+//        //TODO: Acceleration X
+//
+//
+//        //Acceleration Y
+//        tex = new Texture2D(accLog.Count, 100, TextureFormat.ARGB32, false);
+//
+//        //Add normalized Acceleration values to temp list
+//        temp = new List<float>();
+//        
+//        foreach (Vector3 acc in accLog)
+//        {
+//            temp.Add((acc.y / (float)assumedMax));
+//        }
+//        WriteLog(accLog, "accLog");
+//        //Draw acceleration graph
+//        DrawGraph(tex, temp, Color.black, 1);
+//
+//        //Draw lines at maxima points
+//        DrawGraph(tex, maximaLog, Color.red, 2);
+//        WriteLog(maximaLog, "maximaLog");
+//
+//        //Populate velList with velocity values calculated from distances between Maxima points
+//        List<float> velList = new List<float>();
+//        List<float> velXList = new List<float>();
+//        List<float> velYList = new List<float>();
+//        float dir;
+//        //velList.Add(0);                             //Append 0 at the beginning of velList to make sure trial starts at 0
+//        for (int i = 1; i < maximaLog.Count; i++)
+//        {
+//            velList.Add((1.0f*3.6f / ((maximaLog[i] - maximaLog[i - 1])*0.02f)));
+//            dir = rotationLog[maximaLog[i]] *(Mathf.PI/180.0f);
+//            velXList.Add(-(Mathf.Sin(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
+//            velYList.Add((Mathf.Cos(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
+//        }
+//        velList.Add(0);                             //Append 0 at the end of velList to make sure trial ends at 0
+//        velList.Add(0);                             //Twice
+//
+//        velXList.Add(0);
+//        velXList.Add(0);
+//        velYList.Add(0);
+//        velYList.Add(0);
+//
+//        maximaLog.Add(accLog.Count);  
+//
+//		BezierPath bezierPath;
+//		List<Vector3> drawingPoints;
+//
+//        maxVel = Mathf.Max(velXList.ToArray());
+//        List<Vector3> points = new List<Vector3>();
+//        List<Vector2> points2v = new List<Vector2>();
+//
+//        for (int i = 0; i < velXList.Count; i++)
+//        {
+//            points.Add(new Vector3(maximaLog[i], velXList[i], 0));
+//        }
+//		bezierPath = new BezierPath();
+//		bezierPath.Interpolate(points, .5f);
+//		drawingPoints = bezierPath.GetDrawingPoints2();
+//		foreach (Vector3 point in drawingPoints)
+//		{
+//			points2v.Add (new Vector2(point.x, point.y));
+//		}
+//		WriteLog(points2v, "velXLog");
+//
+//        maxVel = Mathf.Max(velYList.ToArray());
+//        points = new List<Vector3>();
+//        points2v = new List<Vector2>();
+//        for (int i = 0; i < velYList.Count; i++)
+//        {
+//            points.Add(new Vector3(maximaLog[i], velYList[i], 0));
+//        }
+//		bezierPath = new BezierPath();
+//		bezierPath.Interpolate(points, .5f);
+//		drawingPoints = bezierPath.GetDrawingPoints2();
+//		foreach (Vector3 point in drawingPoints)
+//		{
+//			points2v.Add (new Vector2(point.x, point.y));
+//		}
+//		WriteLog(points2v, "velYLog");
+//		
+//		DrawGraph(tex, points, Color.blue, 3);
+//
+//        //User Acceleration Calculation
+//        points2v = new List<Vector2>();
+//		points = new List<Vector3>();
+//        for (int i = 0; i < velList.Count-1; i++)
+//        {
+//            dir = rotationLog[maximaLog[i]] * (Mathf.PI / 180.0f);
+//			points.Add(new Vector3(maximaLog[i], (velXList[i + 1] - velXList[i]), 0));
+//        }
+//		bezierPath = new BezierPath();
+//		bezierPath.Interpolate(points, .5f);
+//		drawingPoints = bezierPath.GetDrawingPoints2();
+//		foreach (Vector3 point in drawingPoints)
+//		{
+//			points2v.Add (new Vector2(point.x, point.y));
+//		}
+//        WriteLog(points2v, "accXLog");
+//
+//        points2v = new List<Vector2>();
+//		points = new List<Vector3>();
+//        for (int i = 0; i < velList.Count - 1; i++)
+//        {
+//            dir = rotationLog[maximaLog[i]] * (Mathf.PI / 180.0f);
+//            points.Add(new Vector3(maximaLog[i], (velYList[i + 1] - velYList[i]), 0));
+//        }
+//		bezierPath = new BezierPath();
+//		bezierPath.Interpolate(points, .5f);
+//		drawingPoints = bezierPath.GetDrawingPoints2();
+//		foreach (Vector3 point in drawingPoints)
+//		{
+//			points2v.Add (new Vector2(point.x, point.y));
+//		}
+//		WriteLog(points2v, "accYLog");
+//
+//		
+//		//Draw all graphs onto the texture and convert to image
+//        tex.Apply();
+//        SaveTextureToFile(tex, "accelerationY");
+//
+//        //Basic Graph to show rotation changes
+//        temp.Clear();
+//        tex = new Texture2D(accLog.Count, 100, TextureFormat.ARGB32, false);
+//        foreach (float rot in rotationLog)
+//        {
+//            if (rot > Mathf.PI/2)
+//                temp.Add((rot - Mathf.PI) / (Mathf.PI / 2));
+//            else
+//                temp.Add(rot / (Mathf.PI / 2));
+//        }
+//        DrawGraph(tex, temp, Color.black, 1);
+//        tex.Apply();
+//        SaveTextureToFile(tex, "RotationZ");
+//
+//        //Clear logs
+//        accLog.Clear();
+//        velLog.Clear();
+//        maximaLog.Clear();
+//        maximaLog.Add(0);
+//
+//        rotationLog.Clear();
+//
+//		float time1 = regularClock.GetComponent<ClockScript>().totalTime;
+//		float time2 = warpedClock.GetComponent<ClockScript>().totalTime;
+//		WriteValues (time1, time2, "clockTimes");
+//
+//		WriteLog (warpedTimeLog, "WarpedClockTimes");
+//
+//
+//        //Draw the simulation results
+//        simulator.SendMessage("simulationDraw");
+//
+//        //Capture Screenshot
+//        Texture2D tex2 = new Texture2D(Screen.width, Screen.height);
+//        //StartCoroutine(CaptureScreenshotAfterDelay(tex2));
+//        tex2.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+//        tex2.Apply();
+//
+//        SaveTextureToFile(tex2, "GraphMakerAccY");
+		PlayerManager.Instance.Summarize (regularClock.GetComponent<ClockScript>().totalTime, warpedClock.GetComponent<ClockScript>().totalTime);
 
         //Another way to capture screenshot that doesn't seem to be working
         Application.CaptureScreenshot(Application.persistentDataPath+ "Screenshot.png");

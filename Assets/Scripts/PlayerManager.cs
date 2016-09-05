@@ -103,7 +103,7 @@ public class PlayerManager : MonoBehaviour{
 
 	//Function that is executed at the end of a trial.
 	//it draws the required graphs, clears the logs and sets up for the next trial
-	void Summarize(float time1, float time2)
+	public void Summarize(float time1, float time2)
 	{
 		currVel = Vector3.zero;
 
@@ -124,9 +124,11 @@ public class PlayerManager : MonoBehaviour{
 		{
 			temp.Add((acc.y / (float)assumedMax));
 		}
+		Debug.Log ("1");
 		WriteLog(accLog, "accLog");
 		//Draw acceleration graph
 		DrawGraph(tex, temp, Color.black, 1);
+		Debug.Log ("2");
 
 		//Draw lines at maxima points
 		DrawGraph(tex, maximaLog, Color.red, 2);
@@ -155,6 +157,8 @@ public class PlayerManager : MonoBehaviour{
 
 		maximaLog.Add(accLog.Count);  
 
+		Debug.Log ("2a");
+
 		BezierPath bezierPath;
 		List<Vector3> drawingPoints;
 
@@ -166,15 +170,21 @@ public class PlayerManager : MonoBehaviour{
 		{
 			points.Add(new Vector3(maximaLog[i], velXList[i], 0));
 		}
+
+		Debug.Log ("2b");
 		bezierPath = new BezierPath();
+		Debug.Log ("2ba");
 		bezierPath.Interpolate(points, .5f);
-		drawingPoints = bezierPath.GetDrawingPoints2();
+		Debug.Log ("2bb");
+		drawingPoints = bezierPath.GetDrawingPoints1();
+		Debug.Log ("2bc");
 		foreach (Vector3 point in drawingPoints)
 		{
 			points2v.Add (new Vector2(point.x, point.y));
 		}
+		Debug.Log ("2bd");
 		WriteLog(points2v, "velXLog");
-
+		Debug.Log ("3");
 		maxVel = Mathf.Max(velYList.ToArray());
 		points = new List<Vector3>();
 		points2v = new List<Vector2>();
@@ -184,7 +194,7 @@ public class PlayerManager : MonoBehaviour{
 		}
 		bezierPath = new BezierPath();
 		bezierPath.Interpolate(points, .5f);
-		drawingPoints = bezierPath.GetDrawingPoints2();
+		drawingPoints = bezierPath.GetDrawingPoints1();
 		foreach (Vector3 point in drawingPoints)
 		{
 			points2v.Add (new Vector2(point.x, point.y));
@@ -203,7 +213,7 @@ public class PlayerManager : MonoBehaviour{
 		}
 		bezierPath = new BezierPath();
 		bezierPath.Interpolate(points, .5f);
-		drawingPoints = bezierPath.GetDrawingPoints2();
+		drawingPoints = bezierPath.GetDrawingPoints1();
 		foreach (Vector3 point in drawingPoints)
 		{
 			points2v.Add (new Vector2(point.x, point.y));
@@ -219,17 +229,18 @@ public class PlayerManager : MonoBehaviour{
 		}
 		bezierPath = new BezierPath();
 		bezierPath.Interpolate(points, .5f);
-		drawingPoints = bezierPath.GetDrawingPoints2();
+		drawingPoints = bezierPath.GetDrawingPoints1();
 		foreach (Vector3 point in drawingPoints)
 		{
 			points2v.Add (new Vector2(point.x, point.y));
 		}
 		WriteLog(points2v, "accYLog");
-
+		Debug.Log ("4");
 
 		//Draw all graphs onto the texture and convert to image
 		tex.Apply();
-		SaveTextureToFile(tex, "accelerationY");
+		SaveTextureToFile(tex, "accelerationYSingleton");
+		Debug.Log ("5");
 
 		//Basic Graph to show rotation changes
 		temp.Clear();
@@ -265,6 +276,7 @@ public class PlayerManager : MonoBehaviour{
 		//StartCoroutine(CaptureScreenshotAfterDelay(tex2));
 		tex2.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
 		tex2.Apply();
+		Debug.Log ("6");
 
 		SaveTextureToFile(tex2, "GraphMakerAccY");
 	}
