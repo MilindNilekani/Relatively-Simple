@@ -84,6 +84,8 @@ public class PlayerManager : MonoBehaviour{
 		simulator = GameObject.Find ("Simulator");
 		simulator.SendMessage("initializeSimulation");
 
+		rotationLog = new List<float> ();
+
 		playerAngle = 0;
 
 		maximaLog.Add(0);
@@ -106,13 +108,14 @@ public class PlayerManager : MonoBehaviour{
 	public void Summarize(float time1, float time2)
 	{
 		currVel = Vector3.zero;
-
 		Texture2D tex;
 		List<float> temp;
 		float maxVel;
 
 		//TODO: Acceleration X
-
+//		for (int i = 0; i < rotationLog.Count; i++) {
+//			Debug.Log (-(Mathf.Sin (rotationLog [i])));
+//		}
 
 		//Acceleration Y
 		tex = new Texture2D(accLog.Count, 100, TextureFormat.ARGB32, false);
@@ -140,8 +143,9 @@ public class PlayerManager : MonoBehaviour{
 		//velList.Add(0);                             //Append 0 at the beginning of velList to make sure trial starts at 0
 		for (int i = 1; i < maximaLog.Count; i++)
 		{
+			Debug.Assert (maximaLog [i] - maximaLog [i-1] != 0);
 			velList.Add((1.0f*3.6f / ((maximaLog[i] - maximaLog[i - 1])*0.02f)));
-			dir = rotationLog[maximaLog[i]] *(Mathf.PI/180.0f);
+			dir = rotationLog[maximaLog[i]] *Mathf.Deg2Rad;
 			velXList.Add(-(Mathf.Sin(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
 			velYList.Add((Mathf.Cos(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
 		}
@@ -168,6 +172,8 @@ public class PlayerManager : MonoBehaviour{
 		}
 		bezierPath = new BezierPath();
 		bezierPath.Interpolate(points, .5f);
+//		for (int i=0; i<velXList.Count; i++)
+//			Debug.Log (velXList [i]);
 		drawingPoints = bezierPath.GetDrawingPoints2();
 		foreach (Vector3 point in drawingPoints)
 		{

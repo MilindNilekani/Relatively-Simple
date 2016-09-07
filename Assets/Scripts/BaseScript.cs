@@ -1,5 +1,4 @@
 ﻿#define SINGLETON
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -90,7 +89,7 @@ public class BaseScript : MonoBehaviour {
         
         maximaLog.Add(0);
 
-		PlayerManager.Instance.Start ();
+		//PlayerManager.Instance.Start ();
     }
 
 //    void OnGUI()
@@ -140,7 +139,7 @@ public class BaseScript : MonoBehaviour {
 #if SINGLETON
 	void Summarize()
 	{		
-		loadingScreen.transform.localPosition = new Vector3 (0, 0, -120);
+		//loadingScreen.transform.localPosition = new Vector3 (0, 0, -120);
 		PlayerManager.Instance.Summarize (regularClock.GetComponent<ClockScript>().totalTime, warpedClock.GetComponent<ClockScript>().totalTime);
 		Application.LoadLevel(4);
 	}
@@ -170,8 +169,8 @@ public class BaseScript : MonoBehaviour {
         {
             temp.Add((acc.y / (float)assumedMax));
         }
-        //WriteLog(accLog, "accLog");
-        Draw acceleration graph
+        WriteLog(accLog, "accLog");
+        //Draw acceleration graph
         DrawGraph(tex, temp, Color.black, 1);
 
         //Draw lines at maxima points
