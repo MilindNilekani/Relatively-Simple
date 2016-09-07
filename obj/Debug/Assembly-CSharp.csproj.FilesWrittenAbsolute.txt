@@ -19,3 +19,7 @@
 /Users/users/Documents/Relatively-Simple/Temp/bin/Debug/Unity.CecilTools.dll
 /Users/users/Documents/Relatively-Simple/Temp/bin/Debug/Mono.Cecil.Pdb.dll
 /Users/users/Documents/Relatively-Simple/Temp/bin/Debug/Mono.Cecil.Mdb.dll
+/Users/users/Documents/Relatively-Simple/Temp/bin/Debug/Assembly-CSharp.dll.mdb
+/Users/users/Documents/Relatively-Simple/Temp/bin/Debug/Assembly-CSharp.dll
+/Users/users/Documents/Relatively-Simple/obj/Debug/Assembly-CSharp.dll
+/Users/users/Documents/Relatively-Simple/obj/Debug/Assembly-CSharp.dll.mdb
