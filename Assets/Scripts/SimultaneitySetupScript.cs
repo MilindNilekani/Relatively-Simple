@@ -9,6 +9,7 @@ public class SimultaneitySetupScript : MonoBehaviour {
     public GameObject frontWall;
     public GameObject backWall;
     public GameObject emitter;
+	public AudioSource audio;
 
     private List<GameObject> frontPhotons;
 	private List<GameObject> backPhotons;
@@ -44,6 +45,11 @@ public class SimultaneitySetupScript : MonoBehaviour {
     {
         //GUI.TextArea(new Rect(10, 10, 100, 100), playerSpeed.ToString());
     }
+
+	public void PlayHit()
+	{
+		audio.Play ();
+	}
 
     public void StartPhotonsClick()
     {
@@ -89,7 +95,7 @@ public class SimultaneitySetupScript : MonoBehaviour {
 			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, backWall.transform.position);
 			newPhoton2.transform.parent = transform;
 
-			yield return new WaitForSeconds (0.25f);
+			yield return new WaitForSeconds (0.5f);
 		}
 	}
 

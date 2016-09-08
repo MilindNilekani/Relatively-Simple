@@ -4,6 +4,7 @@ using System.Collections;
 public class SimultaneityPhotonScript : MonoBehaviour {
 
 	public Vector3 target;
+	public GameObject setup;
 
 	private Vector3 direction;
 	private float velocity;
@@ -12,7 +13,7 @@ public class SimultaneityPhotonScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		setup = GameObject.Find ("SimultaneitySetup");
 	}
 
 	public void InitializeParams(float vel, Vector3 t)
@@ -32,6 +33,7 @@ public class SimultaneityPhotonScript : MonoBehaviour {
 		transform.Translate (velocity * direction);
 		//Debug.Log(Mathf.Sign(target-img.transform.position));
 		if (Vector3.Dot((target - transform.position), direction) < 0) {
+			setup.SendMessage ("PlayHit");
 			Destroy (gameObject);
 		}
 	}

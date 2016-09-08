@@ -4,28 +4,18 @@ using UnityEngine.UI;
 public class ClockScript : MonoBehaviour
 {
 
-    private int seconds;
-    private int milliseconds;
+    int seconds;
+    int milliseconds;
+	int lastTickTime;
 
+	public bool tickAudio;
     public RectTransform hand;
     public Text text;
-
     public float totalTime;
     public float multiplier;
+	public AudioSource audio;
 
 	private bool running;
-
-    void Update()
-    {
-		if (running) 
-		{
-			totalTime += Time.deltaTime * multiplier;
-			milliseconds = (int)(totalTime * 10) % 10;
-			seconds = (int)(totalTime);
-            hand.localRotation = Quaternion.Euler(0, 0, -totalTime / 60.0f * 360.0f);
-            text.text = seconds + ":" + milliseconds;
-		}
-    }
 
     void Start()
     {
@@ -33,8 +23,25 @@ public class ClockScript : MonoBehaviour
         milliseconds = 0;
 		running = true;
         multiplier = 1;
+		lastTickTime = 0;
         //hand = GameObject.Find("Hand").GetComponent<RectTransform>();
     }
+
+	void Update()
+	{
+		if (running) 
+		{
+			totalTime += Time.deltaTime * multiplier;
+			if (tickAudio && totalTime > lastTickTime + 1) {
+				audio.Play ();
+				lastTickTime = (int)totalTime;
+			}
+			milliseconds = (int)(totalTime * 10) % 10;
+			seconds = (int)(totalTime);
+			hand.localRotation = Quaternion.Euler(0, 0, -totalTime / 60.0f * 360.0f);
+			text.text = seconds + ":" + milliseconds;
+		}
+	}
 
     void ChangeSpeed(float mul)
     {

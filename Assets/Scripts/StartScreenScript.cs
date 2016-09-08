@@ -55,24 +55,25 @@ public class StartScreenScript : MonoBehaviour {
 
 	IEnumerator ToggleSubMenu (Image a, direction dir)
 	{
-		Vector3 startPos;
-		Vector3 endPos;
-		if (dir == direction.IN) {
-			startPos = subMenuPos;
-			endPos = Vector3.zero;
-		}
-		else
-		{
-			startPos = Vector3.zero;
-			endPos = subMenuPos;
-		}
-
-		for (float t = 0f;t<=1.0f; t+=0.05f)
-		{
-			a.GetComponent<RectTransform> ().anchoredPosition = Vector3.Lerp(startPos, endPos, t);
-			yield return new WaitForSeconds(0.005f);
-		}
+		//Transitions are horribly laggy on the android
+//		Vector3 startPos;
+//		Vector3 endPos;
+//		if (dir == direction.IN) {
+//			startPos = subMenuPos;
+//			endPos = Vector3.zero;
+//		}
+//		else
+//		{
+//			startPos = Vector3.zero;
+//			endPos = subMenuPos;
+//		}
+//		for (float t = 0f;t<=1.0f; t+=0.1f)
+//		{
+//			a.GetComponent<RectTransform> ().anchoredPosition = Vector3.Lerp(startPos, endPos, t);
+//			yield return new WaitForSeconds(0.1f);
+//		}
 		a.GetComponent<RectTransform> ().anchoredPosition = (dir == direction.IN)? Vector3.zero:subMenuPos;
+		yield return true;
 	}
 
 	public void StartSimulationTimeDilation()

@@ -103,6 +103,11 @@ public class PlayerManager : MonoBehaviour{
 		//speedOfLight = GUI.HorizontalSlider(new Rect(550, 30, 300, 50), speedOfLight, 1.0f, 20.0f);
 	}
 
+	public void SliderChanged(float newVal)
+	{
+		speedOfLight = Mathf.Exp(newVal);
+	}
+
 	//Function that is executed at the end of a trial.
 	//it draws the required graphs, clears the logs and sets up for the next trial
 	public void Summarize(float time1, float time2)
