@@ -93,6 +93,7 @@
      <Compile Include="Assets\Scripts\HelpObjectScript.cs" />
      <Compile Include="Assets\Scripts\LightClockScript.cs" />
      <Compile Include="Assets\Scripts\LineDrawScript.cs" />
+     <Compile Include="Assets\Scripts\MainMenuButtonScript.cs" />
      <Compile Include="Assets\Scripts\PlayerManager.cs" />
      <Compile Include="Assets\Scripts\PosHistoryScaleScript.cs" />
      <Compile Include="Assets\Scripts\PosHistoryScript.cs" />
