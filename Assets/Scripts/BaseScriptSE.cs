@@ -24,6 +24,7 @@ public class BaseScriptSE : MonoBehaviour {
     public GameObject compassNeedle;
     public GameObject chartManager;
     public GameObject simulator;
+	public GameObject speedometer;
     public GameObject simultaneitySetup;
     //public GameObject regularClock;
     //public GameObject warpedClock;
@@ -528,6 +529,11 @@ public class BaseScriptSE : MonoBehaviour {
 		File.WriteAllBytes("/sdcard/" + fileName + ".png", bytes );
 
 	}
+
+	public void ChangeSpeed(float calcVel)
+	{
+		speedometer.SendMessage ("ChangeSpeed", calcVel);
+	}
     
 
     //Gets called after every few milliseconds
@@ -615,6 +621,8 @@ public class BaseScriptSE : MonoBehaviour {
         simultaneitySetup.SendMessage("ChangeVel", calcVelX);
 
         currVel += avgAcc;
+
+		speedometer.SendMessage ("ChangeSpeed", calcVel);
 
 		//Rotation must happen in the opposite way to negate player's rotation! '-' sign added!!!
         compassNeedle.transform.Rotate(new Vector3(0, 0, -Input.gyro.rotationRateUnbiased.z*Time.deltaTime*(180.0f/Mathf.PI)));

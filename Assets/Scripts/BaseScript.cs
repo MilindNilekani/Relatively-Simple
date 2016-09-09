@@ -59,35 +59,35 @@ public class BaseScript : MonoBehaviour {
 
     void Start()
     {
-        frameTime = 0;
-
-		Input.gyro.enabled = true;
-        avgAcc = Vector3.zero;
-		vel = Vector3.zero;
-		pos = transform.position;
-
-        chartManager = GameObject.Find("Chart Manager");
-        simulator = GameObject.Find("Simulator");
-		regularClock = GameObject.Find ("Regular Clock");
-		warpedClock = GameObject.Find("Warped Clock");
+//        frameTime = 0;
+//
+//		Input.gyro.enabled = true;
+//        avgAcc = Vector3.zero;
+//		vel = Vector3.zero;
+//		pos = transform.position;
+//
+//        chartManager = GameObject.Find("Chart Manager");
+//        simulator = GameObject.Find("Simulator");
+//		regularClock = GameObject.Find ("Regular Clock");
+//		warpedClock = GameObject.Find("Warped Clock");
 		ruler = GameObject.Find("Ruler");
-        simulator.SendMessage("initializeSimulation");
-		
-        horizontalRuler = GameObject.Find("Horizontal Ruler");
-        verticalRuler = GameObject.Find("Vertical Ruler");
+//        simulator.SendMessage("initializeSimulation");
+//		
+//        horizontalRuler = GameObject.Find("Horizontal Ruler");
+//        verticalRuler = GameObject.Find("Vertical Ruler");
 		speedometer = GameObject.Find ("SpeedoBackground");
 		loadingScreen = GameObject.Find ("Loading Screen");
-
-		nextTime = 10;
-        speedOfLight = 15;
-
-		//playerDirection = Vector3.right;
-		playerAngle = 0;
-
-        hRulerDefaultScale = horizontalRuler.transform.localScale;
-        vRulerDefaultScale = verticalRuler.transform.localScale;
-        
-        maximaLog.Add(0);
+//
+//		nextTime = 10;
+//        speedOfLight = 15;
+//
+//		//playerDirection = Vector3.right;
+//		playerAngle = 0;
+//
+//        hRulerDefaultScale = horizontalRuler.transform.localScale;
+//        vRulerDefaultScale = verticalRuler.transform.localScale;
+//        
+//        maximaLog.Add(0);
 
 		//PlayerManager.Instance.Start ();
     }

@@ -93,7 +93,7 @@ public class StartScreenScript : MonoBehaviour {
 
     public void StartFeynmansExperiment()
     {
-        //Application.LoadLevel(5);
+        Application.LoadLevel(8);
     }
 
     public void StartSimulationSimultaneity()
