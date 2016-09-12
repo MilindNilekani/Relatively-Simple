@@ -86,13 +86,13 @@
      <Compile Include="Assets\Scripts\BaseScriptSE.cs" />
      <Compile Include="Assets\Scripts\ChartManager2Script.cs" />
      <Compile Include="Assets\Scripts\ChartManagerScript.cs" />
+     <Compile Include="Assets\Scripts\ChartingScript.cs" />
      <Compile Include="Assets\Scripts\ClockResultScript.cs" />
      <Compile Include="Assets\Scripts\ClockScript.cs" />
      <Compile Include="Assets\Scripts\ConsoleDebug.cs" />
      <Compile Include="Assets\Scripts\GraphScript.cs" />
      <Compile Include="Assets\Scripts\HelpObjectScript.cs" />
      <Compile Include="Assets\Scripts\LightClockScript.cs" />
-     <Compile Include="Assets\Scripts\LineDrawScript.cs" />
      <Compile Include="Assets\Scripts\MainMenuButtonScript.cs" />
      <Compile Include="Assets\Scripts\PlayerManager.cs" />
      <Compile Include="Assets\Scripts\PosHistoryScaleScript.cs" />
@@ -100,6 +100,7 @@
      <Compile Include="Assets\Scripts\ResultScreenButtonManagerScript.cs" />
      <Compile Include="Assets\Scripts\ResultScript.cs" />
      <Compile Include="Assets\Scripts\RulerScript.cs" />
+     <Compile Include="Assets\Scripts\SimpleGraphScript.cs" />
      <Compile Include="Assets\Scripts\SimulatorScript.cs" />
      <Compile Include="Assets\Scripts\SimultaneityPhotonScript.cs" />
      <Compile Include="Assets\Scripts\SimultaneitySetupScript.cs" />

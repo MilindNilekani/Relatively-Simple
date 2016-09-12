@@ -86,8 +86,8 @@ public class SimpleGraph {
 	public SimpleGraph()
 	{
 		values = new List<Vector2> ();
-		coords = new Vector2 (Screen.width/2, Screen.height/10);
-		dimensions = new Vector2 (Screen.width, Screen.height/5);
+		coords = new Vector2 (0, 0);//(Screen.width/2, Screen.height/10);
+		dimensions = new Vector2 (0,0);// (Screen.width, Screen.height/5);
 		yMultiplyer = 20;
 		bottomPadding = 10;
 		n = 0;
@@ -127,7 +127,7 @@ public class SimpleGraph {
 	}
 }
 
-public class LineDrawScript : MonoBehaviour {
+public class ChartingScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

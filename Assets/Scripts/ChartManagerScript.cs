@@ -5,10 +5,12 @@ using System.Collections.Generic;
 public class ChartManagerScript : MonoBehaviour {
     public int accLogMemory;
     public int numberOfPoints;
-	public SimpleGraph lineGraph3;
+	//public SimpleGraph lineGraph3;
+	public GameObject simpleGraph;
 
     private List<Vector2> accLog;
     private List<Vector2> compactAccLog;
+	private SimpleGraphScript simpleGraphScript;
 
     private float accumulator;
     private int valuesPerPoint;
@@ -19,9 +21,12 @@ public class ChartManagerScript : MonoBehaviour {
         accLog = new List <Vector2>();
         compactAccLog = new List<Vector2>();
 
-		lineGraph3 = new SimpleGraph(); 
+//		lineGraph3 = new SimpleGraph();
+//		lineGraph3.SetParams (new Vector2 (Screen.width / 2, Screen.height / 10), new Vector2 (Screen.width, Screen.height / 5));
 
         valuesPerPoint = accLogMemory / numberOfPoints;
+
+		simpleGraphScript = simpleGraph.GetComponent<SimpleGraphScript> ();
 	}
 	
 	// Update is called once per frame
@@ -46,12 +51,13 @@ public class ChartManagerScript : MonoBehaviour {
 
 			//compactAccLog.Add (new Vector2 (i, Random.Range(0,10)));
         }
-		lineGraph3.NewValues(compactAccLog);
+//		lineGraph3.NewValues(compactAccLog);
+		simpleGraphScript.NewValues (compactAccLog);
 	}
 
 	void OnGUI()
 	{
-		lineGraph3.Draw ();
+		//lineGraph3.Draw ();
 	}
 
     void UpdateAccLog(Vector2 acc)

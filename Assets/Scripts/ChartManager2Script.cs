@@ -17,7 +17,10 @@ public class ChartManager2Script : MonoBehaviour
     public WMG_Series series32;
 	public WMG_Series series4;
 	public WMG_Series series42;
-	
+
+	public GameObject simpleGraph;
+	public SimpleGraphScript simpleGraphScript;
+
     private List<Vector2> velXLog;
     private List<Vector2> velYLog;
 	private List<Vector2> velLog;
@@ -69,6 +72,8 @@ public class ChartManager2Script : MonoBehaviour
         userAccYLog = new List<Vector2>();
 		warpedTimeLog = new List<Vector2> ();
 		realTimeLog = new List<Vector2> ();
+
+		simpleGraphScript = simpleGraph.GetComponent<SimpleGraphScript> ();
     }
 
     // Update is called once per frame
@@ -81,6 +86,9 @@ public class ChartManager2Script : MonoBehaviour
         series32.pointValues = userAccYLog;
 		series4.pointValues = warpedTimeLog;
 		series42.pointValues = realTimeLog;
+
+		simpleGraphScript.NewValues (velLog);
+
     }
 
     void NewVelXLog(List<Vector2> newVelLog)
