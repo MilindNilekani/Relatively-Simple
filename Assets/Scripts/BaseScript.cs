@@ -70,7 +70,7 @@ public class BaseScript : MonoBehaviour {
 //        simulator = GameObject.Find("Simulator");
 //		regularClock = GameObject.Find ("Regular Clock");
 //		warpedClock = GameObject.Find("Warped Clock");
-		ruler = GameObject.Find("Ruler");
+//		ruler = GameObject.Find("Ruler");
 //        simulator.SendMessage("initializeSimulation");
 //		
 //        horizontalRuler = GameObject.Find("Horizontal Ruler");
