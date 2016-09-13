@@ -3,25 +3,25 @@ using System.Collections;
 
 public class BaseScript : MonoBehaviour {
 	public GameObject regularClock;
-	public GameObject warpedClock;
+    public GameObject warpedClock;
 	public GameObject ruler;
 	public GameObject speedometer;
 	public GameObject loadingScreen;
 
-	void Start()
-	{
+    void Start()
+    {
 		speedometer = GameObject.Find ("SpeedoBackground");
 		loadingScreen = GameObject.Find ("Loading Screen");
-	}
+    }
 
-	void Update()
-	{
+    void Update()
+    {
 
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
 			Application.LoadLevel(1);
 		}
-	}
+    }
 
 	public void OnButtonPress()
 	{
@@ -50,5 +50,10 @@ public class BaseScript : MonoBehaviour {
 	public void ChangeRulerScale(Vector3 scale)
 	{
 		ruler.SendMessage("ChangeRulerScale", scale);
+	}
+
+	public void ChangeRotation(Vector3 angle)
+	{
+		
 	}
 }

@@ -21,7 +21,6 @@ public class PlayerManager : MonoBehaviour{
 	public int smoothingWindowSize = 20;
 	public float assumedMax = 0.2f;
 
-	public Transform flashScreen;
 	public GameObject simulator;	
 	public GameObject regularClock;
 	public GameObject warpedClock;
@@ -362,6 +361,7 @@ public class PlayerManager : MonoBehaviour{
 		currVel += avgAcc;
 		playerAngle += Input.gyro.rotationRateUnbiased.z * Time.deltaTime * Mathf.Rad2Deg;
 		playerAngle = playerAngle % 360;
+		baseObject.SendMessage ("ChangeRotation", playerAngle);
 		rotationLog.Add(playerAngle);
 	}
 
