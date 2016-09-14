@@ -121,6 +121,7 @@ public class ResultScript : MonoBehaviour {
 		lines = System.IO.File.ReadAllLines(@"/sdcard/clockTimes.txt");
 		float time1 = Convert.ToSingle(lines[0]);
 		float time2 = Convert.ToSingle(lines[1]);
+		Debug.Log (time1 + ":" + time2);
 		regularClock.SendMessage ("ChangeTime", time1);
 		warpedClock.SendMessage ("ChangeTime", time2);
 

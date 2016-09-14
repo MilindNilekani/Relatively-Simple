@@ -73,7 +73,7 @@ public class ChartManager2Script : MonoBehaviour
 		warpedTimeLog = new List<Vector2> ();
 		realTimeLog = new List<Vector2> ();
 
-		simpleGraphScript = simpleGraph.GetComponent<SimpleGraphScript> ();
+		//simpleGraphScript = simpleGraph.GetComponent<SimpleGraphScript> ();
     }
 
     // Update is called once per frame
@@ -87,7 +87,7 @@ public class ChartManager2Script : MonoBehaviour
 		series4.pointValues = warpedTimeLog;
 		series42.pointValues = realTimeLog;
 
-		simpleGraphScript.NewValues (velLog);
+		//simpleGraphScript.NewValues (velLog);
 
     }
 

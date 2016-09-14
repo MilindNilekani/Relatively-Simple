@@ -52,7 +52,7 @@ public class BaseScript : MonoBehaviour {
 		ruler.SendMessage("ChangeRulerScale", scale);
 	}
 
-	public void ChangeRotation(Vector3 angle)
+	public void ChangeRotation(float angle)
 	{
 		
 	}

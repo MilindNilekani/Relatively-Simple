@@ -260,6 +260,8 @@ public class PlayerManager : MonoBehaviour{
 		maximaLog.Add(0);
 
 		rotationLog.Clear();
+		Debug.Log (time1 +" " + time2);
+		Debug.Log(warpedClock.GetComponent<ClockScript>().totalTime + " " + regularClock.GetComponent<ClockScript>().totalTime);
 		WriteValues (time1, time2, "clockTimes");
 
 		WriteLog (warpedTimeLog, "WarpedClockTimes");

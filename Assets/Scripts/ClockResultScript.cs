@@ -17,6 +17,6 @@ public class ClockResultScript : MonoBehaviour {
 
 	void ChangeTime(float time)
 	{
-		textBoxObj.GetComponent<Text>().text = (int)(time * 10) % 10 + ":" + (int)(time);
+		textBoxObj.GetComponent<Text>().text = (int)(time) + ":"+ (int)(time * 10) % 10;
 	}
 }
