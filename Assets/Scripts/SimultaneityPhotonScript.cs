@@ -10,13 +10,14 @@ public class SimultaneityPhotonScript : MonoBehaviour {
 	private float velocity;
 	private Transform img;
 	private float startTime;
+	private bool facingForward; 
 
 	// Use this for initialization
 	void Start () {
 		setup = GameObject.Find ("SimultaneitySetup");
 	}
 
-	public void InitializeParams(float vel, Vector3 t)
+	public void InitializeParams(float vel, Vector3 t, bool heading)
 	{
 		velocity = vel;
 		target = t;
@@ -26,6 +27,15 @@ public class SimultaneityPhotonScript : MonoBehaviour {
 		float angle = Mathf.Atan2(dir.y,dir.x) * Mathf.Rad2Deg;
 		img.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 		startTime = Time.time;
+		facingForward = heading;
+	}
+
+	public void ChangeVel (float frontVel, float backVel)
+	{
+		if (facingForward)
+			velocity = frontVel;
+		else
+			velocity = backVel;
 	}
 
 	// Update is called once per frame

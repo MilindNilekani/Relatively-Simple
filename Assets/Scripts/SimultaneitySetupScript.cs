@@ -82,17 +82,21 @@ public class SimultaneitySetupScript : MonoBehaviour {
         //Debug.Log(newVel);
         playerSpeed = newVel;
 		calcPhotonSpeeds ();
+		SimultaneityPhotonScript[] photons = transform.GetComponentsInChildren<SimultaneityPhotonScript> ();
+		foreach (SimultaneityPhotonScript photon in photons) {
+			photon.ChangeVel (frontPhotonVelocity, backPhotonVelocity);
+		}
     }
 
 	IEnumerator EmitPhotons()
 	{
 		while (true) {
 			GameObject newPhoton = GameObject.Instantiate (frontPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject;
-			newPhoton.GetComponent<SimultaneityPhotonScript> ().InitializeParams (frontPhotonVelocity, frontWall.transform.position);
+			newPhoton.GetComponent<SimultaneityPhotonScript> ().InitializeParams (frontPhotonVelocity, frontWall.transform.position, true);
 			newPhoton.transform.parent = transform;
 
 			GameObject newPhoton2 = GameObject.Instantiate (backPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject;
-			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, backWall.transform.position);
+			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, backWall.transform.position, false);
 			newPhoton2.transform.parent = transform;
 
 			yield return new WaitForSeconds (0.5f);
