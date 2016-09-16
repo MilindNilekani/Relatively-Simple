@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\BitmapTrial\PixelChange.cs" />
      <Compile Include="Assets\Curve\BezierPath.cs" />
      <Compile Include="Assets\Curve\Main.cs" />
      <Compile Include="Assets\Graph_Maker\DOTween\Examples\Basics.cs" />
@@ -109,7 +110,6 @@
      <Compile Include="Assets\Scripts\SpeedoScript.cs" />
      <Compile Include="Assets\Scripts\SpeedoScript2.cs" />
      <Compile Include="Assets\Scripts\SplashScreenButtonManagerScript.cs" />
-     <Compile Include="Assets\Scripts\StarPathFollowScript.cs" />
      <Compile Include="Assets\Scripts\StartScreenScript.cs" />
      <Compile Include="Assets\Scripts\TextToTexture.cs" />
      <Compile Include="Assets\Scripts\VirtualPlayerScript.cs" />

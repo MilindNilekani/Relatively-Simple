@@ -55,7 +55,7 @@ public class StartScreenScript : MonoBehaviour {
 
 	IEnumerator ToggleSubMenu (Image a, direction dir)
 	{
-		//Transitions are horribly laggy on the android
+		//Transitions are horribly laggy on android
 //		Vector3 startPos;
 //		Vector3 endPos;
 //		if (dir == direction.IN) {

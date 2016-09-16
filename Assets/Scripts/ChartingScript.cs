@@ -82,6 +82,9 @@ public class SimpleGraph {
 	private int n;
 	private int yMultiplyer;
 	private int bottomPadding;
+	private Texture2D texture;
+
+	int at=0;
 
 	public SimpleGraph()
 	{
@@ -117,13 +120,32 @@ public class SimpleGraph {
 		}
 	}
 
-	public void Draw(){
+	public void Draw(Renderer r, RenderTexture rt){
 		for (int i=0; i<n-1; i++) {
 			Vector2 pointA = new Vector2 (coords.x-dimensions.x/2+values [i].x*dimensions.x/(n-1) , Screen.height-coords.y+dimensions.y/2-bottomPadding-values[i].y*yMultiplyer);
 			Vector2 pointB = new Vector2 (coords.x-dimensions.x/2+values [i+1].x*dimensions.x/(n-1) , Screen.height-coords.y+dimensions.y/2-bottomPadding-values[i+1].y*yMultiplyer);
-			Drawing.DrawLine(pointA, pointB, new Color(0.16f, 0.75f, 0.99f), 3.0f);
+			//Drawing.DrawLine(pointA, pointB, new Color(0.16f, 0.75f, 0.99f), 3.0f);
+			DrawLine(r, rt, pointA, pointB, new Color(0.16f, 0.75f, 0.99f));
 		}
-	
+		DrawLine(r, rt, Vector2.zero, Vector2.zero, new Color(0.16f, 0.75f, 0.99f));
+	}
+
+	public void DrawLine(Renderer r, RenderTexture rt, Vector2 pointA, Vector2 pointB, Color color)
+	{
+		RenderTexture.active = rt; 
+		//don't forget that you need to specify rendertexture before you call readpixels
+		//otherwise it will read screen pixels.
+		texture = new Texture2D (rt.width, rt.height);
+		r.material.mainTexture =  texture;
+		at++;
+		texture.ReadPixels (new Rect (0, 0, rt.width, rt.height), 0, 0);
+		for (int i = 0; i < rt.width*.2f; i++) 
+			for (int j = 0; j < rt.height;j++){
+				texture.SetPixel((at +i),j, new Color(1,0,0) );
+			}
+		texture.Apply (); 
+		RenderTexture.active = null; //don't forget to set it back to null once you finished playing with it. 
+
 	}
 }
 
