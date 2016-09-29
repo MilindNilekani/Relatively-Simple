@@ -16,7 +16,7 @@ public class PlayerManager : MonoBehaviour{
 	public Vector3 avgAcc;
 	public int neighbourhoodSize = 10;
 	public int stopTimeThreshold = 100;
-	public float neighbourhoodThreshold = 0.005f;
+	public float neighbourhoodThreshold = 0.003f;
 	public int maximaSpacing = 10;
 	public int smoothingWindowSize = 20;
 	public float assumedMax = 0.2f;
@@ -26,6 +26,7 @@ public class PlayerManager : MonoBehaviour{
 	public GameObject warpedClock;
 	public GameObject baseObject;
 	public GameObject chartManager;
+	public GameObject warningSign;
 
 	private float playerAngle;
 
@@ -200,6 +201,10 @@ public class PlayerManager : MonoBehaviour{
 		}
 		WriteLog(points2v, "velYLog");
 
+		//Scale the velocity points to 1/15 to fit in the image
+		for (int i = 0; i < points.Count; i++) {
+			points [i] = new Vector3(points [i].x, points[i].y/15, points[i].z);
+		}
 		DrawGraph(tex, points, Color.blue, 3);
 
 		//User Acceleration Calculation
@@ -312,17 +317,17 @@ public class PlayerManager : MonoBehaviour{
 
 			//Search for maxima and replace bands of maxima with a single (the first) one
 			ConsoleDebug.Instance.Print("No Maxima");
+
+//			wS2.transform.parent = ;
 			if (CheckIfMaxima(1 + neighbourhoodSize, list, neighbourhoodSize, neighbourhoodThreshold))
 			{
 				ConsoleDebug.Instance.Print ("Found Maxima");
 				if (maximaLog.Count == 0)
-					maximaLog.Add(accLog.Count - 1 - neighbourhoodSize);
-				else
-					if (accLog.Count - 1 - neighbourhoodSize > maximaLog[maximaLog.Count - 1] + maximaSpacing)
-					{
-						maximaLog.Add(accLog.Count - 1 - neighbourhoodSize);
-						simulator.SendMessage("simulationSetSpeed", (50.0f / ((accLog.Count - 1 - neighbourhoodSize) - maximaLog[maximaLog.Count - 2])));
-					}
+					maximaLog.Add (accLog.Count - 1 - neighbourhoodSize);
+				else if (accLog.Count - 1 - neighbourhoodSize > maximaLog [maximaLog.Count - 1] + maximaSpacing) {
+					maximaLog.Add (accLog.Count - 1 - neighbourhoodSize);
+					simulator.SendMessage ("simulationSetSpeed", (50.0f / ((accLog.Count - 1 - neighbourhoodSize) - maximaLog [maximaLog.Count - 2])));
+				}
 			}
 		}
 		//Send relevant information to the simulator

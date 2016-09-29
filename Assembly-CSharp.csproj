@@ -100,6 +100,7 @@
      <Compile Include="Assets\Scripts\ResultScreenButtonManagerScript.cs" />
      <Compile Include="Assets\Scripts\ResultScript.cs" />
      <Compile Include="Assets\Scripts\RulerScript.cs" />
+     <Compile Include="Assets\Scripts\SelfDesctructScript.cs" />
      <Compile Include="Assets\Scripts\SimpleGraphScript.cs" />
      <Compile Include="Assets\Scripts\SimulatorScript.cs" />
      <Compile Include="Assets\Scripts\SimultaneityPhotonScript.cs" />
