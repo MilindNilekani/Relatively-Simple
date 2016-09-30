@@ -7,6 +7,8 @@ public class BaseScript : MonoBehaviour {
 	public GameObject ruler;
 	public GameObject speedometer;
 	public GameObject loadingScreen;
+	public GameObject warningSign;
+	GameObject warningSignInstance = null;
 
     void Start()
     {
@@ -45,6 +47,14 @@ public class BaseScript : MonoBehaviour {
 	public void ChangeSpeed(float[] velArr)
 	{
 		float calcVel = velArr [0];
+		if (calcVel > 3) {
+			if (warningSignInstance == null) {
+				warningSignInstance = (GameObject)GameObject.Instantiate (warningSign);
+				warningSignInstance.transform.SetParent (speedometer.transform.parent, false);
+			}
+		}
+		else
+			warningSignInstance = null;
 		speedometer.SendMessage ("ChangeSpeed", calcVel);
 	}
 

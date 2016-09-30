@@ -14,7 +14,7 @@ public class PlayerManager : MonoBehaviour{
 	public GUIStyle style;
 	public Vector3 vel;
 	public Vector3 avgAcc;
-	public int neighbourhoodSize = 10;
+	public int neighbourhoodSize = 2;
 	public int stopTimeThreshold = 100;
 	public float neighbourhoodThreshold = 0.003f;
 	public int maximaSpacing = 10;
@@ -26,7 +26,6 @@ public class PlayerManager : MonoBehaviour{
 	public GameObject warpedClock;
 	public GameObject baseObject;
 	public GameObject chartManager;
-	public GameObject warningSign;
 
 	private float playerAngle;
 
@@ -377,6 +376,7 @@ public class PlayerManager : MonoBehaviour{
 	}
 
 	//Function to check if a given point in a list of points is a local maxima
+	// Adaptive Step Detection Algorithm - Step Detection Robust against the Dynamics of Smartphones (https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&uact=8&ved=0ahUKEwiAgdLMpbfPAhWMy4MKHTpPAXsQFggmMAE&url=http%3A%2F%2Fwww.mdpi.com%2F1424-8220%2F15%2F10%2F27230%2Fpdf&usg=AFQjCNH9PImEghBlfQRritlnLX8b40Cpug&sig2=EyDHV9IrYnxsAHlqYgLPQQ&bvm=bv.134495766,d.amc)
 	bool CheckIfMaxima(int i, List<float> list, int neighbourhoodSize, float neighbourhoodThreshold)
 	{
 		//Disregard the first few and last few points (because they don't have enough neighbours)
@@ -404,8 +404,10 @@ public class PlayerManager : MonoBehaviour{
 		if (leftNeighbourhood > list[i] - neighbourhoodThreshold * assumedMax || rightNeighbourhood > list[i] - neighbourhoodThreshold * assumedMax)
 			return false;
 
-		if (list[i - neighbourhoodSize+1] > list[i] - 2 * neighbourhoodThreshold || list[i + neighbourhoodSize-1] > list[i] - 2 * neighbourhoodThreshold)
+
+		if (list [i - neighbourhoodSize + 1] > list [i] - 2 * neighbourhoodThreshold || list [i + neighbourhoodSize - 1] > list [i] - 2 * neighbourhoodThreshold) {
 			return false;
+		}
 
 		//Disregard Minima (This eliminates all extrema below 0. TODO: Needs to allow Maxima below 0)
 		if (list[i] < 0)
