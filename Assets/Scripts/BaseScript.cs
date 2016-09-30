@@ -42,8 +42,9 @@ public class BaseScript : MonoBehaviour {
 		Application.LoadLevel(4);
 	}
 
-	public void ChangeSpeed(float calcVel)
+	public void ChangeSpeed(float[] velArr)
 	{
+		float calcVel = velArr [0];
 		speedometer.SendMessage ("ChangeSpeed", calcVel);
 	}
 

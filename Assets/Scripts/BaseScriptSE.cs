@@ -536,10 +536,12 @@ public class BaseScriptSE : MonoBehaviour {
 //	}
 	#endregion
 
-	public void ChangeSpeed(float calcVel)
+	public void ChangeSpeed(float[] velArr)
 	{
+		float calcVel = velArr [0];
+		float calcVelX = velArr [1];
 		speedometer.SendMessage ("ChangeSpeed", calcVel);
-		simultaneitySetup.SendMessage ("ChangeVel", calcVel);
+		simultaneitySetup.SendMessage ("ChangeVel", calcVelX);
 	}
 
 	public void ChangeRulerScale(Vector3 scale)

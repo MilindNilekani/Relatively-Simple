@@ -363,7 +363,11 @@ public class PlayerManager : MonoBehaviour{
 
 		warpedClock.SendMessage ("ChangeSpeed", Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)));
 
-		baseObject.SendMessage ("ChangeSpeed", calcVel);
+		float[] velArr = new float[3];
+		velArr [0] = calcVel;
+		velArr [1] = calcVelX;
+		velArr [2] = calcVelY;
+		baseObject.SendMessage("ChangeSpeed", velArr);
 		baseObject.SendMessage("ChangeRulerScale", new Vector3(Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)) , 1, 1));
 		currVel += avgAcc;
 		playerAngle += Input.gyro.rotationRateUnbiased.z * Time.deltaTime * Mathf.Rad2Deg;
