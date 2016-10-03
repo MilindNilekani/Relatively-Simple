@@ -7,6 +7,7 @@ public class SimulatorScript : MonoBehaviour {
 
     public GameObject turtle;
 
+	private string storageFolder;
     private Vector2 simulationTurtlePos;
     private Vector2 simulationTurtleDir;
     private float simulationTurtleSpeed;
@@ -16,7 +17,7 @@ public class SimulatorScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+		storageFolder = Application.persistentDataPath;
         turtle = GameObject.Find("Turtle");
         turtleZPos = turtle.transform.position.z;
 	}
@@ -109,9 +110,9 @@ public class SimulatorScript : MonoBehaviour {
 			text += val.y + ",";
 		}
 		text += "\r\n";
-		StreamWriter sw = System.IO.File.CreateText("/sdcard/" + fileName + ".csv");
+		StreamWriter sw = System.IO.File.CreateText(storageFolder + fileName + ".csv");
 		sw.Close();
-		System.IO.File.WriteAllText("/sdcard/" + fileName + ".csv", text);
+		System.IO.File.WriteAllText(storageFolder + fileName + ".csv", text);
 	}
 
     //TODO:Redundant functions redefined from BaseScript. Consider a better implementation
@@ -189,7 +190,7 @@ public class SimulatorScript : MonoBehaviour {
     void SaveTextureToFile(Texture2D tex, string fileName)
     {
         byte[] bytes = tex.EncodeToPNG();
-        File.WriteAllBytes("/sdcard/" + fileName + ".png", bytes);
+		File.WriteAllBytes(storageFolder + fileName + ".png", bytes);
 
     }
 }
