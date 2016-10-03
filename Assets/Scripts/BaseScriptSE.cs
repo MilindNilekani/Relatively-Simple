@@ -511,7 +511,7 @@ public class BaseScriptSE : MonoBehaviour {
 	public void ChangeSpeed(float[] velArr)
 	{
 		float calcVel = velArr [0];
-		float calcVelX = velArr [1];
+		float calcVelY = velArr [2];
 		if (calcVel > 3) {
 			if (warningSignInstance == null) {
 				warningSignInstance = (GameObject)GameObject.Instantiate (warningSign);
@@ -521,8 +521,8 @@ public class BaseScriptSE : MonoBehaviour {
 		else
 			warningSignInstance = null;
 		speedometer.SendMessage ("ChangeSpeed", calcVel);
-		ConsoleDebug.Instance.Print ((calcVelX).ToString(), 2);
-		simultaneitySetup.SendMessage ("ChangeVel", calcVelX);
+		ConsoleDebug.Instance.Print ((calcVelY).ToString(), 2);
+		simultaneitySetup.SendMessage ("ChangeVel", calcVelY);
 	}
 
 	public void ChangeRulerScale(Vector3 scale)

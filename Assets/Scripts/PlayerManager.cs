@@ -358,8 +358,8 @@ public class PlayerManager : MonoBehaviour{
 		chartManager.SendMessage("UpdateAccLog", new Vector2(0, calcVel));
 
 		float dir = playerAngle;
-		float calcVelX = Mathf.Abs(Mathf.Sin(dir)*calcVel);
-		float calcVelY = Mathf.Abs(Mathf.Cos(dir)*calcVel);
+		float calcVelX = Mathf.Abs(Mathf.Sin(dir*Mathf.Deg2Rad)*calcVel);
+		float calcVelY = Mathf.Abs(Mathf.Cos(dir*Mathf.Deg2Rad)*calcVel);
 
 		warpedClock.SendMessage ("ChangeSpeed", Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)));
 
