@@ -27,7 +27,7 @@ public class PlayerManager : MonoBehaviour{
 	public GameObject baseObject;
 	public GameObject chartManager;
 
-	private float playerAngle;
+	private string storageFolder = "/sdcard/";
 
 	private float calcVel;
 	private Vector3 currVel;
@@ -37,6 +37,7 @@ public class PlayerManager : MonoBehaviour{
 	private float max;
 	private float frameTime;
 	private float speedOfLight;
+	private float playerAngle;
 
 	private List<Vector3> accLog = new List<Vector3>();
 	private List<Vector3> velLog = new List<Vector3>();
@@ -68,6 +69,8 @@ public class PlayerManager : MonoBehaviour{
 	public void Start()
 	{
 		frameTime = 0;
+
+		storageFolder = Application.persistentDataPath;
 
 		Input.gyro.enabled = true;
 		avgAcc = Vector3.zero;
@@ -149,9 +152,9 @@ public class PlayerManager : MonoBehaviour{
 		{
 			Debug.Assert (maximaLog [i] - maximaLog [i-1] != 0);
 			velList.Add((1.0f*3.6f / ((maximaLog[i] - maximaLog[i - 1])*0.02f)));
-			dir = rotationLog[maximaLog[i]] *Mathf.Deg2Rad;
-			velXList.Add(-(Mathf.Sin(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
-			velYList.Add((Mathf.Cos(dir)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
+			dir = rotationLog[maximaLog[i]];
+			velXList.Add(-(Mathf.Sin(dir*Mathf.Deg2Rad)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
+			velYList.Add((Mathf.Cos(dir*Mathf.Deg2Rad)*(1.0f * 3.6f / ((maximaLog[i] - maximaLog[i - 1]) * 0.02f))));
 		}
 		velList.Add(0);                             //Append 0 at the end of velList to make sure trial ends at 0
 		velList.Add(0);                             //Twice
@@ -211,7 +214,7 @@ public class PlayerManager : MonoBehaviour{
 		points = new List<Vector3>();
 		for (int i = 0; i < velList.Count-1; i++)
 		{
-			dir = rotationLog[maximaLog[i]] * (Mathf.PI / 180.0f);
+			dir = rotationLog[maximaLog[i]] * Mathf.Deg2Rad;
 			points.Add(new Vector3(maximaLog[i], (velXList[i + 1] - velXList[i]), 0));
 		}
 		bezierPath = new BezierPath();
@@ -227,7 +230,7 @@ public class PlayerManager : MonoBehaviour{
 		points = new List<Vector3>();
 		for (int i = 0; i < velList.Count - 1; i++)
 		{
-			dir = rotationLog[maximaLog[i]] * (Mathf.PI / 180.0f);
+			dir = rotationLog[maximaLog[i]] * Mathf.Deg2Rad;
 			points.Add(new Vector3(maximaLog[i], (velYList[i + 1] - velYList[i]), 0));
 		}
 		bezierPath = new BezierPath();
@@ -275,12 +278,13 @@ public class PlayerManager : MonoBehaviour{
 		simulator.SendMessage("simulationDraw");
 
 		//Capture Screenshot
-		Texture2D tex2 = new Texture2D(Screen.width, Screen.height);
-		//StartCoroutine(CaptureScreenshotAfterDelay(tex2));
-		tex2.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-		tex2.Apply();
+//		Texture2D tex2 = new Texture2D(Screen.width, Screen.height);
+//		//StartCoroutine(CaptureScreenshotAfterDelay(tex2));
+//		tex2.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+//		tex2.Apply();
 
-		SaveTextureToFile(tex2, "GraphMakerAccY");
+//		SaveTextureToFile(tex2, "GraphMakerAccY");
+		Debug.Log ("Summarization Done");
 	}
 
 	//Gets called after every few milliseconds
@@ -438,9 +442,9 @@ public class PlayerManager : MonoBehaviour{
 			text += val.y + ",";
 		}
 		text += "\r\n";
-		StreamWriter sw = System.IO.File.CreateText("/sdcard/" + fileName + ".csv");
+		StreamWriter sw = System.IO.File.CreateText(storageFolder + fileName + ".csv");
 		sw.Close();
-		System.IO.File.WriteAllText("/sdcard/" + fileName + ".csv", text);
+		System.IO.File.WriteAllText(storageFolder + fileName + ".csv", text);
 	}
 	void WriteLog(List<Vector2> log, string fileName)
 	{
@@ -455,9 +459,9 @@ public class PlayerManager : MonoBehaviour{
 			text += val.y + ",";
 		}
 		text += "\r\n";
-		StreamWriter sw = System.IO.File.CreateText("/sdcard/" + fileName + ".csv");
+		StreamWriter sw = System.IO.File.CreateText(storageFolder + fileName + ".csv");
 		sw.Close();
-		System.IO.File.WriteAllText("/sdcard/" + fileName + ".csv", text);
+		System.IO.File.WriteAllText(storageFolder + fileName + ".csv", text);
 	}
 	void WriteLog(List<int> log, string fileName)
 	{
@@ -467,9 +471,9 @@ public class PlayerManager : MonoBehaviour{
 			text += val + ",";
 		}
 		text += "\r\n";
-		StreamWriter sw = System.IO.File.CreateText("/sdcard/" + fileName + ".csv");
+		StreamWriter sw = System.IO.File.CreateText(storageFolder + fileName + ".csv");
 		sw.Close();
-		System.IO.File.WriteAllText("/sdcard/" + fileName + ".csv", text);
+		System.IO.File.WriteAllText(storageFolder + fileName + ".csv", text);
 	}
 	void WriteLog(List<float> log, string fileName)
 	{
@@ -479,17 +483,17 @@ public class PlayerManager : MonoBehaviour{
 			text += val + ",";
 		}
 		text += "\r\n";
-		StreamWriter sw = System.IO.File.CreateText("/sdcard/" + fileName + ".csv");
+		StreamWriter sw = System.IO.File.CreateText(storageFolder + fileName + ".csv");
 		sw.Close();
-		System.IO.File.WriteAllText("/sdcard/" + fileName + ".csv", text);
+		System.IO.File.WriteAllText(storageFolder + fileName + ".csv", text);
 	}
 	void WriteValues(float T1, float T2, string fileName)
 	{
 		string text = "";
 		text = T1 + "\n" + T2;
-		StreamWriter sw = System.IO.File.CreateText ("/sdcard/" + fileName + ".txt");
+		StreamWriter sw = System.IO.File.CreateText (storageFolder + fileName + ".txt");
 		sw.Close ();
-		System.IO.File.WriteAllText ("/sdcard/" + fileName + ".txt", text);
+		System.IO.File.WriteAllText (storageFolder + fileName + ".txt", text);
 	}
 	//Draws one line passing through all points (x=index in list, y=point[i]) in 'points'
 	void DrawGraph(Texture2D tex, List<float> points, Color color, int style)
@@ -587,7 +591,7 @@ public class PlayerManager : MonoBehaviour{
 	void SaveTextureToFile(Texture2D tex, string fileName)
 	{
 		byte[] bytes = tex.EncodeToPNG();
-		File.WriteAllBytes("/sdcard/" + fileName + ".png", bytes );
+		File.WriteAllBytes(storageFolder + fileName + ".png", bytes );
 
 	}
 	#endregion

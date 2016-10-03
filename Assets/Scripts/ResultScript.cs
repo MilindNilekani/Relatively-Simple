@@ -18,6 +18,7 @@ public class ResultScript : MonoBehaviour {
 	private GameObject warpedClock;
 	private GameObject posHistoryObject;
 
+	private string storageFolder;
 	private float regClockSecs;
 	private float regClockMilliSecs;
 	private float warpClockSecs;
@@ -25,6 +26,7 @@ public class ResultScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		storageFolder = Application.persistentDataPath;
         velXLog = new List<Vector2>();
         velYLog = new List<Vector2>();
 		velLog = new List<Vector2> ();
@@ -43,23 +45,23 @@ public class ResultScript : MonoBehaviour {
 
     void FileExistanceChecks()
     {
-        if (File.Exists("/sdcard/velXLog.csv") == false)
+		if (File.Exists(storageFolder+"velXLog.csv") == false)
             Debug.Log("Velocity X Log not found!");
-        if (File.Exists("/sdcard/velYLog.csv") == false)
+		if (File.Exists(storageFolder+"velYLog.csv") == false)
             Debug.Log("Velocity Y Log not found!");
-        if (File.Exists("/sdcard/accXLog.csv") == false)
+		if (File.Exists(storageFolder+"accXLog.csv") == false)
             Debug.Log("User Acceleration X Log not found!");
-        if (File.Exists("/sdcard/accYLog.csv") == false)
+		if (File.Exists(storageFolder+"accYLog.csv") == false)
             Debug.Log("User Acceleration Y Log not found!");
-		if (File.Exists ("/sdcard/clockTimes.txt") == false)
+		if (File.Exists (storageFolder+"clockTimes.txt") == false)
 			Debug.Log ("Clock times not found!");
-		if (File.Exists("/sdcard/positionHistoryLog.csv") == false)
+		if (File.Exists(storageFolder+"positionHistoryLog.csv") == false)
 			Debug.Log("Position History Log not found!");
     }
 
     void ReadVals()
     {
-        string[] lines = System.IO.File.ReadAllLines(@"/sdcard/velXLog.csv");
+        string[] lines = System.IO.File.ReadAllLines(storageFolder + "velXLog.csv");
         string[] xVals = lines[0].Split(',');
         string[] yVals = lines[1].Split(',');
         //Debug.Assert(xVals.Length == yVals.Length, "The Vel X log seems to have an error");
@@ -70,7 +72,7 @@ public class ResultScript : MonoBehaviour {
             velXLog.Add(vel);
         }
 
-        lines = System.IO.File.ReadAllLines(@"/sdcard/velYLog.csv");
+		lines = System.IO.File.ReadAllLines(storageFolder + "velYLog.csv");
         xVals = lines[0].Split(',');
         yVals = lines[1].Split(',');
         //Debug.Assert(xVals.Length == yVals.Length, "The Vel Y log seems to have an error");
@@ -82,8 +84,6 @@ public class ResultScript : MonoBehaviour {
         }
 
 		Debug.Log ("Starting Vel Calcs");
-		Debug.Log (velXLog.Count);
-        Debug.Log(velYLog.Count);
         //TODO: Figure out why velXLog is bigger than velYLog!
         //This is seriously weird
         int smallerLog;
@@ -96,7 +96,7 @@ public class ResultScript : MonoBehaviour {
         }
 		Debug.Log ("Vel Calcs Completed");
 
-        lines = System.IO.File.ReadAllLines(@"/sdcard/accXLog.csv");
+		lines = System.IO.File.ReadAllLines(storageFolder + "accXLog.csv");
         xVals = lines[0].Split(',');
         yVals = lines[1].Split(',');
         //Debug.Assert(xVals.Length == yVals.Length, "The User Acc X log seems to have an error");
@@ -107,7 +107,7 @@ public class ResultScript : MonoBehaviour {
             usrAccXLog.Add(acc);
         }
 
-        lines = System.IO.File.ReadAllLines(@"/sdcard/accYLog.csv");
+		lines = System.IO.File.ReadAllLines(storageFolder + "accYLog.csv");
         xVals = lines[0].Split(',');
         yVals = lines[1].Split(',');
         //Debug.Assert(xVals.Length == yVals.Length, "The User Acc Y log seems to have an error");
@@ -118,14 +118,14 @@ public class ResultScript : MonoBehaviour {
             usrAccYLog.Add(acc);
 		}
 
-		lines = System.IO.File.ReadAllLines(@"/sdcard/clockTimes.txt");
+		lines = System.IO.File.ReadAllLines(storageFolder + "clockTimes.txt");
 		float time1 = Convert.ToSingle(lines[0]);
 		float time2 = Convert.ToSingle(lines[1]);
 		Debug.Log (time1 + ":" + time2);
 		regularClock.SendMessage ("ChangeTime", time1);
 		warpedClock.SendMessage ("ChangeTime", time2);
 
-		lines = System.IO.File.ReadAllLines(@"/sdcard/positionHistoryLog.csv");
+		lines = System.IO.File.ReadAllLines(storageFolder + "positionHistoryLog.csv");
 		xVals = lines[0].Split(',');
 		yVals = lines[1].Split(',');
 		for (int i = 0; i < xVals.Length; i++)
@@ -135,7 +135,7 @@ public class ResultScript : MonoBehaviour {
 			posHistoryLog.Add(pos);
 		}
 
-		lines = System.IO.File.ReadAllLines(@"/sdcard/WarpedClockTimes.csv");
+		lines = System.IO.File.ReadAllLines(storageFolder + "WarpedClockTimes.csv");
 		xVals = lines[0].Split (',');
 		for (int i = 0; i < xVals.Length; i++)
 		{
