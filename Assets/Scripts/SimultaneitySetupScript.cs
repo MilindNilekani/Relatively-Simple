@@ -28,6 +28,7 @@ public class SimultaneitySetupScript : MonoBehaviour {
     {
 		frontPhotons = new List<GameObject> ();
 		backPhotons = new List<GameObject> ();
+		ChangePhotonVelocity (2);
 		photonsEmitting = false;
 
 		frontPhotonDirection = (frontWall.transform.position - transform.position).normalized;
