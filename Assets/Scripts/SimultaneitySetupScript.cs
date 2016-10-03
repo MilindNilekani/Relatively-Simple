@@ -14,10 +14,10 @@ public class SimultaneitySetupScript : MonoBehaviour {
     private List<GameObject> frontPhotons;
 	private List<GameObject> backPhotons;
 
-    private float speedOfLight = 15;
+    private float speedOfLight;
     private float playerSpeed = 0;
-    private float frontPhotonVelocity = -0.05f;
-    private float backPhotonVelocity = 0.05f;
+    private float frontPhotonVelocity;
+    private float backPhotonVelocity;
 	private Vector2 frontPhotonDirection;
 	private Vector2 backPhotonDirection;
 	private bool photonsEmitting;
@@ -66,7 +66,7 @@ public class SimultaneitySetupScript : MonoBehaviour {
 
     public void ChangePhotonVelocity(float newSpeed)
     {
-        speedOfLight = newSpeed;
+		speedOfLight = Mathf.Exp(newSpeed);
     }
 
     void calcPhotonSpeeds()
@@ -92,11 +92,11 @@ public class SimultaneitySetupScript : MonoBehaviour {
 	{
 		while (true) {
 			GameObject newPhoton = GameObject.Instantiate (frontPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject;
-			newPhoton.GetComponent<SimultaneityPhotonScript> ().InitializeParams (frontPhotonVelocity, frontWall.transform.position, true);
+			newPhoton.GetComponent<SimultaneityPhotonScript> ().InitializeParams (frontPhotonVelocity, frontWall.transform, true);
 			newPhoton.transform.parent = transform;
 
 			GameObject newPhoton2 = GameObject.Instantiate (backPhotonPrefab, emitter.transform.position, Quaternion.identity) as GameObject;
-			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, backWall.transform.position, false);
+			newPhoton2.GetComponent<SimultaneityPhotonScript> ().InitializeParams (backPhotonVelocity, backWall.transform, false);
 			newPhoton2.transform.parent = transform;
 
 			yield return new WaitForSeconds (0.5f);

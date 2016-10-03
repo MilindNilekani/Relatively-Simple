@@ -333,6 +333,7 @@ public class PlayerManager : MonoBehaviour{
 		simulator.SendMessage("simulationChangeDir", playerAngle);
 		simulator.SendMessage("simulationStep", Time.deltaTime);
 
+		#if !UNITY_EDITOR
 		//Calculate an approximate current velocity using previous 2 maxima values
 		if (maximaLog.Count > 2) {
 			// If it has been a considerable time since the last step, the user has probably stopped
@@ -344,7 +345,7 @@ public class PlayerManager : MonoBehaviour{
 			
 			calcVel = 0;
 		}
-
+		#endif
 		if (calcVel > speedOfLight) calcVel = speedOfLight;
 
 
@@ -373,6 +374,16 @@ public class PlayerManager : MonoBehaviour{
 		playerAngle = playerAngle % 360;
 		baseObject.SendMessage ("ChangeRotation", playerAngle);
 		rotationLog.Add(playerAngle);
+	}
+
+	public void ChangePlayerAngleManual(float angle)
+	{
+		playerAngle = angle;
+	}
+
+	public void ChangeVelManual(float vel)
+	{
+		calcVel = vel;
 	}
 
 	//Function to check if a given point in a list of points is a local maxima

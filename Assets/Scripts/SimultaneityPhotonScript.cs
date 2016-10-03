@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SimultaneityPhotonScript : MonoBehaviour {
 
-	public Vector3 target;
+	public Transform target;
 	public GameObject setup;
 
 	private Vector3 direction;
@@ -17,13 +17,13 @@ public class SimultaneityPhotonScript : MonoBehaviour {
 		setup = GameObject.Find ("SimultaneitySetup");
 	}
 
-	public void InitializeParams(float vel, Vector3 t, bool heading)
+	public void InitializeParams(float vel, Transform t, bool heading)
 	{
 		velocity = vel;
 		target = t;
-		direction = (target - transform.position).normalized;
+		direction = (target.position-transform.position).normalized;
 		img = transform.FindChild ("PhotonImage");
-		Vector3 dir = -Mathf.Sign(vel)*(target - img.transform.position);
+		Vector3 dir = -direction; //-Mathf.Sign(vel)*(target.localPosition - img.transform.parent.localPosition);
 		float angle = Mathf.Atan2(dir.y,dir.x) * Mathf.Rad2Deg;
 		img.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 		startTime = Time.time;
@@ -42,7 +42,8 @@ public class SimultaneityPhotonScript : MonoBehaviour {
 	void Update () {
 		transform.Translate (velocity * direction);
 		//Debug.Log(Mathf.Sign(target-img.transform.position));
-		if (Vector3.Dot((target - transform.position), direction) < 0) {
+		Debug.Log(Vector3.Dot((target.position - transform.position), direction));
+		if (Vector3.Dot((target.position - transform.position), direction) <= 0) {
 			setup.SendMessage ("PlayHit");
 			Destroy (gameObject);
 		}

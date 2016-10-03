@@ -31,6 +31,8 @@ public class BaseScriptSE : MonoBehaviour {
     //public GameObject virtualPlayer;
     //public GameObject regularLightClock;
 	public GameObject loadingScreen;
+	public GameObject warningSign;
+	private GameObject warningSignInstance;
 
     //public GameObject lineGraph;
 
@@ -57,37 +59,7 @@ public class BaseScriptSE : MonoBehaviour {
 
     void Start()
     {
-//        frameTime = 0;
-//
-//		Input.gyro.enabled = true;
-//        avgAcc = Vector3.zero;
-//		vel = Vector3.zero;
-//		pos = transform.position;
-//
-//        chartManager = GameObject.Find("Chart Manager");
-//        simulator = GameObject.Find("Simulator");
-//        simulator.SendMessage("initializeSimulation");
-//
-//        simultaneitySetup = GameObject.Find("SimultaneitySetup");
-//		loadingScreen = GameObject.Find ("Loading Screen");
-//
-//		nextTime = 10;
-//        speedOfLight = 15;
-//
-//        
-//        maximaLog.Add(0);
     }
-
-//    void OnGUI()
-//    {
-//        //GUI.skin.label.fontSize = 40;
-//        //GUI.Label(new Rect(10, 10, 1000, 100), "Acceleration is: " + accNew.y);
-//        //GUI.Label(new Rect(10, 100, 1000, 100), "Time between frames is" + frameTime + "");
-//        //GUI.Label(new Rect(10, 200, 1000, 100), "Gyro enabled? " + Input.gyro.enabled);
-//        //GUI.Label(new Rect(10, 200, 1000, 100), "Velocity is: " + globalCalcVelX + "," + globalCalcVelY);
-//
-//        //speedOfLight = GUI.HorizontalSlider(new Rect(550, 30, 300, 50), speedOfLight, 1.0f, 20.0f);
-//    }
 
 	public void SliderChanged(float newVal)
 	{
@@ -109,7 +81,7 @@ public class BaseScriptSE : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			Application.LoadLevel(0);
+			Application.LoadLevel(1);
 		}
     }
 
@@ -540,7 +512,16 @@ public class BaseScriptSE : MonoBehaviour {
 	{
 		float calcVel = velArr [0];
 		float calcVelX = velArr [1];
+		if (calcVel > 3) {
+			if (warningSignInstance == null) {
+				warningSignInstance = (GameObject)GameObject.Instantiate (warningSign);
+				warningSignInstance.transform.SetParent (speedometer.transform.parent, false);
+			}
+		}
+		else
+			warningSignInstance = null;
 		speedometer.SendMessage ("ChangeSpeed", calcVel);
+		ConsoleDebug.Instance.Print ((calcVelX).ToString(), 2);
 		simultaneitySetup.SendMessage ("ChangeVel", calcVelX);
 	}
 

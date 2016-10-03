@@ -8,7 +8,7 @@ public class BaseScript : MonoBehaviour {
 	public GameObject speedometer;
 	public GameObject loadingScreen;
 	public GameObject warningSign;
-	GameObject warningSignInstance = null;
+	private GameObject warningSignInstance = null;
 
     void Start()
     {

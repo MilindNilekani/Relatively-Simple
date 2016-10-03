@@ -1,20 +1,18 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/StartScreenScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ConsoleDebug.cs">
     <Files>
-      <File FileName="Assets/Scripts/StartScreenScript.cs" Line="40" Column="2" />
-      <File FileName="Assets/Scripts/SimultaneitySetupScript.cs" Line="98" Column="40" />
-      <File FileName="Assets/Scripts/LineDrawScript.cs" Line="122" Column="52" />
-      <File FileName="Assets/Scripts/ChartManagerScript.cs" Line="41" Column="45" />
-      <File FileName="Assets/Scripts/SimultaneityPhotonScript.cs" Line="33" Column="32" />
-      <File FileName="Assets/Scripts/BaseScript.cs" Line="79" Column="8" />
-      <File FileName="Assets/Scripts/PlayerManager.cs" Line="360" Column="3" />
-      <File FileName="Assets/Scripts/ConsoleDebug.cs" Line="24" Column="14" />
-      <File FileName="Assets/Scripts/ChartManager2Script.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/ResultScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/RulerScript.cs" Line="42" Column="34" />
-      <File FileName="Assets/Scripts/ClockScript.cs" Line="35" Column="21" />
-      <File FileName="Assets/Scripts/BaseScriptSE.cs" Line="102" Column="6" />
+      <File FileName="Assets/Scripts/SimpleGraphScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ChartingScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/PlayerManager.cs" Line="379" Column="380" />
+      <File FileName="Assets/Scripts/ChartManagerScript.cs" Line="55" Column="21" />
+      <File FileName="Assets/Scripts/SimultaneitySetupScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/SimultaneityPhotonScript.cs" Line="27" Column="12" />
+      <File FileName="Assets/Scripts/ClockScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/SelfDesctructScript.cs" Line="17" Column="23" />
+      <File FileName="Assets/Scripts/BaseScript.cs" Line="40" Column="2" />
+      <File FileName="Assets/Scripts/BaseScriptSE.cs" Line="30" Column="35" />
+      <File FileName="Assets/Scripts/ConsoleDebug.cs" Line="40" Column="20" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
