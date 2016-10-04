@@ -10,7 +10,6 @@ public class BaseScript : MonoBehaviour {
 
     void Start()
     {
-		speedometer = GameObject.Find ("SpeedoBackground");
 		loadingScreen = GameObject.Find ("Loading Screen");
     }
 

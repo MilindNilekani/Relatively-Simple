@@ -82,6 +82,7 @@
      <Compile Include="Assets\Graph_Maker\Scripts\WMG_Ring_Graph.cs" />
      <Compile Include="Assets\Graph_Maker\Scripts\WMG_Series.cs" />
      <Compile Include="Assets\Scripts\BaseScript.cs" />
+     <Compile Include="Assets\Scripts\BaseScriptBNL.cs" />
      <Compile Include="Assets\Scripts\BaseScriptFE.cs" />
      <Compile Include="Assets\Scripts\BaseScriptSE.cs" />
      <Compile Include="Assets\Scripts\ChartManager2Script.cs" />
@@ -92,6 +93,7 @@
      <Compile Include="Assets\Scripts\ConsoleDebug.cs" />
      <Compile Include="Assets\Scripts\GraphScript.cs" />
      <Compile Include="Assets\Scripts\HelpObjectScript.cs" />
+     <Compile Include="Assets\Scripts\LadderScript.cs" />
      <Compile Include="Assets\Scripts\LightClockScript.cs" />
      <Compile Include="Assets\Scripts\MainMenuButtonScript.cs" />
      <Compile Include="Assets\Scripts\PlayerManager.cs" />
