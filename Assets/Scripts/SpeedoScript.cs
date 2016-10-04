@@ -14,7 +14,9 @@ public class SpeedoScript : MonoBehaviour {
 	public Sprite normalPointer;
 	public Sprite highspeedBackground;
 	public Sprite highspeedPointer;
+	public GameObject warningSign;
 
+	private GameObject warningSignInstance;
 	Vector3 start;
 	Vector3 end;
 	float radius;
@@ -62,10 +64,13 @@ public class SpeedoScript : MonoBehaviour {
 			if (new_t > HIGH_SPEED) {
 				gameObject.GetComponent<Image> ().sprite = highspeedBackground;
 				pointer.GetComponent<Image> ().sprite = highspeedPointer;
+				warningSignInstance = GameObject.Instantiate (warningSign) as GameObject;
+				warningSignInstance.transform.SetParent (transform.parent, false);
 				isHighspeed = true;
 			} else {
 				gameObject.GetComponent<Image> ().sprite = normalBackground;
 				pointer.GetComponent<Image> ().sprite = normalPointer;
+				Destroy (warningSignInstance);
 				isHighspeed = false;
 			}
 		}

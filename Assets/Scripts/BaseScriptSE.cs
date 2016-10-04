@@ -512,14 +512,6 @@ public class BaseScriptSE : MonoBehaviour {
 	{
 		float calcVel = velArr [0];
 		float calcVelY = velArr [2];
-		if (calcVel > 3) {
-			if (warningSignInstance == null) {
-				warningSignInstance = (GameObject)GameObject.Instantiate (warningSign);
-				warningSignInstance.transform.SetParent (speedometer.transform.parent, false);
-			}
-		}
-		else
-			warningSignInstance = null;
 		speedometer.SendMessage ("ChangeSpeed", calcVel);
 		ConsoleDebug.Instance.Print ((calcVelY).ToString(), 2);
 		simultaneitySetup.SendMessage ("ChangeVel", calcVelY);
