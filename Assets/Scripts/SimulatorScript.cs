@@ -17,7 +17,7 @@ public class SimulatorScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		storageFolder = Application.persistentDataPath;
+		storageFolder = Application.persistentDataPath+"/";
         turtle = GameObject.Find("Turtle");
         turtleZPos = turtle.transform.position.z;
 	}

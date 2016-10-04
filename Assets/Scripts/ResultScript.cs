@@ -26,7 +26,7 @@ public class ResultScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		storageFolder = Application.persistentDataPath;
+		storageFolder = Application.persistentDataPath+"/";
         velXLog = new List<Vector2>();
         velYLog = new List<Vector2>();
 		velLog = new List<Vector2> ();

@@ -27,7 +27,7 @@ public class PlayerManager : MonoBehaviour{
 	public GameObject baseObject;
 	public GameObject chartManager;
 
-	private string storageFolder = "/sdcard/";
+	private string storageFolder;
 
 	private float calcVel;
 	private Vector3 currVel;
@@ -70,7 +70,7 @@ public class PlayerManager : MonoBehaviour{
 	{
 		frameTime = 0;
 
-		storageFolder = Application.persistentDataPath;
+		storageFolder = Application.persistentDataPath+"/";
 
 		Input.gyro.enabled = true;
 		avgAcc = Vector3.zero;
