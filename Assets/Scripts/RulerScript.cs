@@ -17,6 +17,7 @@ public class RulerScript : MonoBehaviour {
 	void Start () {
 		rulerDefaultScale = transform.localScale;
 		scaleList = new List<Vector3> ();
+		scaleList.Add (rulerDefaultScale);
 		rulerText = GameObject.Find ("RulerText");
 	}
 	

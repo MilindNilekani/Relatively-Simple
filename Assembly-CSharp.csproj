@@ -91,6 +91,7 @@
      <Compile Include="Assets\Scripts\ClockResultScript.cs" />
      <Compile Include="Assets\Scripts\ClockScript.cs" />
      <Compile Include="Assets\Scripts\ConsoleDebug.cs" />
+     <Compile Include="Assets\Scripts\FrameOfReferenceToggleScript.cs" />
      <Compile Include="Assets\Scripts\GraphScript.cs" />
      <Compile Include="Assets\Scripts\HelpObjectScript.cs" />
      <Compile Include="Assets\Scripts\LadderScript.cs" />
