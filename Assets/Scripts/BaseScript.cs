@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class BaseScript : MonoBehaviour {
@@ -18,7 +19,7 @@ public class BaseScript : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			Application.LoadLevel(1);
+			SceneManager.LoadScene ("MainMenuScene");
 		}
     }
 
@@ -38,7 +39,7 @@ public class BaseScript : MonoBehaviour {
 	void Summarize()
 	{		
 		PlayerManager.Instance.Summarize (regularClock.GetComponent<ClockScript>().totalTime, warpedClock.GetComponent<ClockScript>().totalTime);
-		Application.LoadLevel(4);
+		SceneManager.LoadScene ("ResultScene");
 	}
 
 	public void ChangeSpeed(float[] velArr)

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class StartScreenScript : MonoBehaviour {
 
@@ -78,31 +79,36 @@ public class StartScreenScript : MonoBehaviour {
 
 	public void StartSimulationTimeDilation()
 	{
-		Application.LoadLevel (2);
+		SceneManager.LoadScene ("TimeDilationScene");
 	}
 
 	public void StartSimulationLengthContraction()
 	{
-		Application.LoadLevel (6);
+		SceneManager.LoadScene ("SpaceContractionScene");
+	}
+
+	public void StartExperimentBarnAndLadder()
+	{
+		SceneManager.LoadScene ("BarnAndLadderScene");
 	}
 
 	public void HelpScreen()
 	{
-		Application.LoadLevel (3);
+		SceneManager.LoadScene ("HelpScene");
 	}
 
     public void StartFeynmansExperiment()
     {
-        Application.LoadLevel(8);
+		SceneManager.LoadScene ("FeynmansExperiment");
     }
 
     public void StartSimulationSimultaneity()
     {
-        Application.LoadLevel(5);
+		SceneManager.LoadScene ("SimultaneityExperimentScene");
     }
 
     public void Exit()
     {
-        Application.LoadLevel(0);
+		SceneManager.LoadScene ("StartScene");
     }
 }

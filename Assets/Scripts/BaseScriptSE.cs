@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -68,7 +69,7 @@ public class BaseScriptSE : MonoBehaviour {
 
     public void OnBack()
     {
-        Application.LoadLevel(1);
+		SceneManager.LoadScene ("MainMenuScene");
     }
 
     void Update()
@@ -81,7 +82,7 @@ public class BaseScriptSE : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			Application.LoadLevel(1);
+			SceneManager.LoadScene ("MainMenuScene");
 		}
     }
 
@@ -101,7 +102,7 @@ public class BaseScriptSE : MonoBehaviour {
 	void Summarize()
 	{		
 		PlayerManager.Instance.Summarize (regularClock.GetComponent<ClockScript>().totalTime, warpedClock.GetComponent<ClockScript>().totalTime);
-		Application.LoadLevel(4);
+		SceneManager.LoadScene ("ResultScene");
 	}
 	#region summary
 //	void Summarize()

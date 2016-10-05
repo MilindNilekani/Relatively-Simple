@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.IO;
 using System;
@@ -163,7 +164,7 @@ public class ResultScript : MonoBehaviour {
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			Application.LoadLevel(1);
+			SceneManager.LoadScene ("MainMenuScene");
 		}
 	}
 }
