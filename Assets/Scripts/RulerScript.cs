@@ -50,6 +50,13 @@ public class RulerScript : MonoBehaviour {
 		rulerText.GetComponent<Text> ().text = (newScale.x).ToString("F2") + " m";
 	}
 
+	public void ResetRulerScale()
+	{
+		for (int i = 0; i < scaleList.Count; i++) {
+			scaleList [i] = rulerDefaultScale;
+		}
+	}
+
 	private IEnumerator ChangeRulerScaleCoroutine(Vector3 newScale)
 	{
 		float t = 0.0f;
