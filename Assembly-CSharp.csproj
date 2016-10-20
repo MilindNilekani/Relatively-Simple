@@ -81,6 +81,7 @@
      <Compile Include="Assets\Graph_Maker\Scripts\WMG_Ring.cs" />
      <Compile Include="Assets\Graph_Maker\Scripts\WMG_Ring_Graph.cs" />
      <Compile Include="Assets\Graph_Maker\Scripts\WMG_Series.cs" />
+     <Compile Include="Assets\Scripts\BarnScript.cs" />
      <Compile Include="Assets\Scripts\BaseScript.cs" />
      <Compile Include="Assets\Scripts\BaseScriptBNL.cs" />
      <Compile Include="Assets\Scripts\BaseScriptFE.cs" />
