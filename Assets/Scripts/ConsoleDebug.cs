@@ -24,9 +24,9 @@ public class ConsoleDebug : MonoBehaviour {
 
 	void OnGUI()
 	{
-		GUI.skin.label.fontSize = 40;
-		GUI.Label(new Rect(10, 300, 1000, 100), msg);
-		GUI.Label(new Rect(10, 400, 1000, 100), msg2);
+//		GUI.skin.label.fontSize = 40;
+//		GUI.Label(new Rect(10, 300, 1000, 100), msg);
+//		GUI.Label(new Rect(10, 400, 1000, 100), msg2);
 	}
 
 	public void Print(string inputMsg)
