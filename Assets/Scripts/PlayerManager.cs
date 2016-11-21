@@ -5,30 +5,38 @@ using System.IO;
 
 
 public class PlayerManager : MonoBehaviour{
-
+    //Player singleton
 	private static PlayerManager _instance;
-
+    //Speed values
 	public float speed = 10.0F;
+
+    //Accelaration values
 	public Queue<Vector3> acc = new Queue<Vector3> ();
 	public Vector3 accNew;
 	public GUIStyle style;
 	public Vector3 vel;
 	public Vector3 avgAcc;
+
+    //Graph values
 	public int neighbourhoodSize = 2;
 	public int stopTimeThreshold = 100;
 	public float neighbourhoodThreshold = 0.003f;
 	public int maximaSpacing = 10;
+    //Threshold values for calculating avg accelaration
 	public int smoothingWindowSize = 20;
 	public float assumedMax = 0.2f;
 
+    //Public Gameobjects in scene
 	public GameObject simulator;	
 	public GameObject regularClock;
 	public GameObject warpedClock;
 	public GameObject baseObject;
 	public GameObject chartManager;
 
+    //Saving values
 	private string storageFolder;
 
+    //Velocity values
 	private float calcVel;
 	private Vector3 currVel;
 	private Vector3 maxVel;
@@ -39,16 +47,14 @@ public class PlayerManager : MonoBehaviour{
 	private float speedOfLight;
 	private float playerAngle;
 
+    //Accelaration and velocity lists
 	private List<Vector3> accLog = new List<Vector3>();
 	private List<Vector3> velLog = new List<Vector3>();
 	private List<int> maximaLog = new List<int>();
 	private List<float> rotationLog = new List<float>();
 	private List<float> warpedTimeLog = new List<float>();
 
-	private GraphScript graphXScript;
-	private GraphScript graphYScript;
-	private GraphScript graphVelScript;
-
+    //Getter Setters
 	public static PlayerManager Instance {
 		get { 
 			if (_instance == null) {
@@ -61,6 +67,7 @@ public class PlayerManager : MonoBehaviour{
 
 	public float CalcVel { get { return calcVel; } }
 
+    //Create instance of class
 	void Awake()
 	{
 		_instance = this;
@@ -86,8 +93,6 @@ public class PlayerManager : MonoBehaviour{
 		simulator = GameObject.Find ("Simulator");
 		simulator.SendMessage("initializeSimulation");
 
-		rotationLog = new List<float> ();
-
 		playerAngle = 0;
 
 		maximaLog.Add(0);
@@ -98,11 +103,6 @@ public class PlayerManager : MonoBehaviour{
 		GUI.skin.label.fontSize = 40;
 		GUI.Label(new Rect(10, 10, 1000, 100), "Direction: " + playerAngle);
 		GUI.Label(new Rect(10, 100, 1000, 100), "Vel: " + calcVel);
-		//GUI.Label(new Rect(10, 100, 1000, 100), "Time between frames is" + frameTime + "");
-		//GUI.Label(new Rect(10, 200, 1000, 100), "Gyro enabled? " + Input.gyro.enabled);
-		//GUI.Label(new Rect(10, 200, 1000, 100), "Compass Heading " + compassNeedle.transform.rotation.eulerAngles.z);
-
-		//speedOfLight = GUI.HorizontalSlider(new Rect(550, 30, 300, 50), speedOfLight, 1.0f, 20.0f);
 	}
 
 	public void SliderChanged(float newVal)
@@ -267,8 +267,7 @@ public class PlayerManager : MonoBehaviour{
 		maximaLog.Add(0);
 
 		rotationLog.Clear();
-//		Debug.Log (time1 +" " + time2);
-//		Debug.Log(warpedClock.GetComponent<ClockScript>().totalTime + " " + regularClock.GetComponent<ClockScript>().totalTime);
+
 		WriteValues (time1, time2, "clockTimes");
 
 		WriteLog (warpedTimeLog, "WarpedClockTimes");
@@ -276,15 +275,6 @@ public class PlayerManager : MonoBehaviour{
 
 		//Draw the simulation results
 		simulator.SendMessage("simulationDraw");
-
-		//Capture Screenshot
-//		Texture2D tex2 = new Texture2D(Screen.width, Screen.height);
-//		//StartCoroutine(CaptureScreenshotAfterDelay(tex2));
-//		tex2.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-//		tex2.Apply();
-
-//		SaveTextureToFile(tex2, "GraphMakerAccY");
-		Debug.Log ("Summarization Done");
 	}
 
 	//Gets called after every few milliseconds
@@ -320,8 +310,7 @@ public class PlayerManager : MonoBehaviour{
 
 			//Search for maxima and replace bands of maxima with a single (the first) one
 			ConsoleDebug.Instance.Print("No Maxima");
-
-//			wS2.transform.parent = ;
+            
 			if (CheckIfMaxima(1 + neighbourhoodSize, list, neighbourhoodSize, neighbourhoodThreshold))
 			{
 				ConsoleDebug.Instance.Print ("Found Maxima");
@@ -337,7 +326,7 @@ public class PlayerManager : MonoBehaviour{
 		simulator.SendMessage("simulationChangeDir", playerAngle);
 		simulator.SendMessage("simulationStep", Time.deltaTime);
 
-		#if !UNITY_EDITOR
+#if !UNITY_EDITOR
 		//Calculate an approximate current velocity using previous 2 maxima values
 		if (maximaLog.Count > 2) {
 			// If it has been a considerable time since the last step, the user has probably stopped
@@ -349,15 +338,15 @@ public class PlayerManager : MonoBehaviour{
 			
 			calcVel = 0;
 		}
-		#endif
-		if (calcVel > speedOfLight) calcVel = speedOfLight;
+#endif
 
-
-
-		//Debug.Log (GameObject.Find("Warped Clock"));
+        //Values of vel compared to c
+        if (calcVel > speedOfLight) calcVel = speedOfLight;
+      
 		float totalTime = warpedClock.GetComponent<ClockScript>().totalTime;
 		warpedTimeLog.Add (totalTime);
 
+        //Pass values to line chart manager
 		Vector2 avgAcc2v = new Vector2(avgAcc.x, avgAcc.y);
 		chartManager.SendMessage("UpdateAccLog", new Vector2(0, calcVel));
 
@@ -371,9 +360,17 @@ public class PlayerManager : MonoBehaviour{
 		velArr [0] = calcVel;
 		velArr [1] = calcVelX;
 		velArr [2] = calcVelY;
+
+        //Change speed on Speedometer
 		baseObject.SendMessage("ChangeSpeed", velArr);
-		baseObject.SendMessage("ChangeRulerScale", new Vector3(Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)) , 1, 1));
+
+        //Change length of ruler:DISTANCE
+        if(Application.loadedLevel==6) //Ruler scene
+		    baseObject.SendMessage("ChangeRulerScale", new Vector3(Mathf.Sqrt(1 - Mathf.Pow(calcVel / speedOfLight, 2)) , 1, 1));
+
 		currVel += avgAcc;
+
+        //Update playerAngle
 		playerAngle += Input.gyro.rotationRateUnbiased.z * Time.deltaTime * Mathf.Rad2Deg;
 		playerAngle = playerAngle % 360;
 		baseObject.SendMessage ("ChangeRotation", playerAngle);
@@ -433,7 +430,8 @@ public class PlayerManager : MonoBehaviour{
 		return true;
 	}
 	#region Graph Drawing Functions
-		
+	
+    //Write values into graph staging area	
 	void WriteLog(List<Vector3> log, string fileName)
 	{
 		string text = "";
@@ -487,6 +485,8 @@ public class PlayerManager : MonoBehaviour{
 		sw.Close();
 		System.IO.File.WriteAllText(storageFolder + fileName + ".csv", text);
 	}
+
+    //Push values
 	void WriteValues(float T1, float T2, string fileName)
 	{
 		string text = "";
@@ -495,6 +495,8 @@ public class PlayerManager : MonoBehaviour{
 		sw.Close ();
 		System.IO.File.WriteAllText (storageFolder + fileName + ".txt", text);
 	}
+
+    //Draw shit!
 	//Draws one line passing through all points (x=index in list, y=point[i]) in 'points'
 	void DrawGraph(Texture2D tex, List<float> points, Color color, int style)
 	{

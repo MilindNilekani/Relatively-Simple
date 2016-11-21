@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ChartManagerScript : MonoBehaviour {
+    //ATTACH CHARTINGSCRIPT TO SAME GAMEOBJECT AND KEEP GAMEOBJECT SIMPLE GRAPH ALSO AS THIS FOR DRAWING LINE GRAPH
+
     public int accLogMemory;
     public int numberOfPoints;
 	//public SimpleGraph lineGraph3;
@@ -21,25 +23,19 @@ public class ChartManagerScript : MonoBehaviour {
         accLog = new List <Vector2>();
         compactAccLog = new List<Vector2>();
 
-//		lineGraph3 = new SimpleGraph();
-//		lineGraph3.SetParams (new Vector2 (Screen.width / 2, Screen.height / 10), new Vector2 (Screen.width, Screen.height / 5));
-
-        valuesPerPoint = accLogMemory / numberOfPoints;
+        valuesPerPoint = accLogMemory / numberOfPoints; //4
 
 		simpleGraphScript = simpleGraph.GetComponent<SimpleGraphScript> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        compactAccLog.Clear();
+        compactAccLog.Clear(); //Clear previous list
 
         if (accLog.Count < accLogMemory)            //Ignore the graph calculations if we don't have enough calculated values yet
             return;
 
-//		for (int i = 0; i < numberOfPoints; i++) {
-//			compactAccLog.Add (new Vector2(i, Random.Range(0,20)));
-//		}
-
+        //Assign line graph values
         for (int i = 0; i < numberOfPoints; i++ )
         {
             accumulator = 0;
@@ -48,10 +44,9 @@ public class ChartManagerScript : MonoBehaviour {
                 accumulator += accLog[i * valuesPerPoint + j].y;
             }
             compactAccLog.Add(new Vector2(i, accumulator / valuesPerPoint));
-
-			//compactAccLog.Add (new Vector2 (i, Random.Range(0,10)));
         }
-//		lineGraph3.NewValues(compactAccLog);
+
+        //Draw line graph
 		simpleGraphScript.NewValues (compactAccLog);
 	}
 
@@ -60,6 +55,7 @@ public class ChartManagerScript : MonoBehaviour {
 		//lineGraph3.Draw ();
 	}
 
+    //Called from Player Manager in fixed udpate based on accelaration values
     void UpdateAccLog(Vector2 acc)
     {
         accLog.Add(acc);

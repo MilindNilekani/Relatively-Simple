@@ -3,27 +3,17 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class SplashScreenButtonManagerScript : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
+   
+    //Play button OnClick
     public void OnClick()
     {
         Application.LoadLevel(1);
     }
 
+    //Intro Video OnClick
 	public void OnClickVideo()
 	{
 		Handheld.PlayFullScreenMovie ("IntroVideo.mp4", Color.black, FullScreenMovieControlMode.CancelOnInput);
-	}
-
-	public void EndOfMovie()
-	{
 	}
 
 }

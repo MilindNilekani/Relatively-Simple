@@ -127,7 +127,7 @@ public class ChartManager2Script : MonoBehaviour
 				}
 				acc /= multiple;
 				warpedTimeLog.Add (new Vector2 (newTimeLog [i].x, acc));
-				Debug.Log (newTimeLog[i].x);
+				//Debug.Log (newTimeLog[i].x);
 				realTimeLog.Add(new Vector2(newTimeLog[i].x, newTimeLog[i].x)); 
 			}
 		} else
