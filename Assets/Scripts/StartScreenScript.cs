@@ -24,6 +24,12 @@ public class StartScreenScript : MonoBehaviour {
 	
 	}
 
+	public void OnClickPlayVideo()
+	{
+		Debug.Log ("Playing new video");
+		Handheld.PlayFullScreenMovie ("intro 2.mp4", Color.black, FullScreenMovieControlMode.CancelOnInput);
+	}
+
 	public void OnTimeDilationButtonClick()
 	{
 		StartCoroutine (ToggleSubMenu(timeDilationSubMenu, direction.IN));
